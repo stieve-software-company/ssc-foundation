@@ -6,6 +6,20 @@ Definir a evolução da Stieve Software Company desde sua fundação documental 
 
 O roadmap poderá ser atualizado conforme novas decisões forem aprovadas.
 
+## Situação atual
+
+```text
+Fase 0 — Fundação              Concluída
+Fase 1 — Infraestrutura Base   Em andamento
+Sprint atual                   1.1 — Ambiente Docker
+```
+
+Última atualização:
+
+```text
+2026-08-02
+```
+
 # Princípios do roadmap
 
 - Arquitetura antes da implementação
@@ -18,6 +32,12 @@ O roadmap poderá ser atualizado conforme novas decisões forem aprovadas.
 - Nenhuma fase deverá depender de funcionalidades ainda não validadas
 
 # Fase 0 — Fundação
+
+## Estado da fase
+
+Concluída.
+
+---
 
 ## Sprint 0.1 — Project Discovery
 
@@ -62,6 +82,10 @@ Definir a experiência do usuário antes da implementação da plataforma.
 
 Todos os fluxos principais deverão estar documentados e aprovados antes da modelagem da API.
 
+### Estado
+
+Concluída.
+
 ---
 
 ## Sprint 0.3 — Modelo de Dados e API
@@ -85,6 +109,10 @@ Transformar os fluxos do Mission Control em entidades, relacionamentos, permiss�
 - Swagger
 - Versionamento `/api/v1`
 
+### Estado
+
+Concluída.
+
 ---
 
 ## Sprint 0.4 — Arquitetura da Plataforma
@@ -107,9 +135,25 @@ Definir detalhadamente os componentes que formarão o CompanyOS.
 - Estratégia de armazenamento
 - Estratégia de isolamento
 
+### Estado
+
+Concluída.
+
+---
+
 # Fase 1 — Infraestrutura Base
 
+## Estado da fase
+
+Em andamento.
+
+---
+
 ## Sprint 1.1 — Ambiente Docker
+
+### Objetivo
+
+Criar a base executável, reproduzível e segura para todos os serviços do CompanyOS.
 
 ### Entregas
 
@@ -122,7 +166,17 @@ Definir detalhadamente os componentes que formarão o CompanyOS.
 - Scripts de atualização
 - Scripts de backup
 
+### Estado
+
+Em andamento.
+
+---
+
 ## Sprint 1.2 — Serviços de infraestrutura
+
+### Objetivo
+
+Disponibilizar os serviços compartilhados necessários para a execução do CompanyOS.
 
 ### Serviços iniciais
 
@@ -135,7 +189,17 @@ Definir detalhadamente os componentes que formarão o CompanyOS.
 - Grafana
 - Loki
 
+### Estado
+
+Planejada.
+
+---
+
 ## Sprint 1.3 — API inicial
+
+### Objetivo
+
+Criar a estrutura inicial executável da API do CompanyOS.
 
 ### Entregas
 
@@ -147,6 +211,12 @@ Definir detalhadamente os componentes que formarão o CompanyOS.
 - Logs estruturados
 - Tratamento de erros
 - Migrações com Alembic
+
+### Estado
+
+Planejada.
+
+---
 
 # Fase 2 — CompanyOS Core
 
