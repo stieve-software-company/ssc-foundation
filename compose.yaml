@@ -1,0 +1,322 @@
+name: ${COMPOSE_PROJECT_NAME:-ssc}
+
+x-common-labels: &common-labels
+  com.stieve-software-company.platform: "companyos"
+  com.stieve-software-company.environment: "${SSC_ENVIRONMENT:-development}"
+  com.stieve-software-company.managed-by: "docker-compose"
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "${DOCKER_LOG_MAX_SIZE:-10m}"
+    max-file: "${DOCKER_LOG_MAX_FILE:-5}"
+
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  init: true
+  security_opt:
+    - no-new-privileges:true
+  logging: *default-logging
+
+services:
+  postgres:
+    <<: *service-defaults
+    image: ${POSTGRES_IMAGE:?Defina POSTGRES_IMAGE no arquivo .env}
+    command:
+      - postgres
+      - -c
+      - max_connections=${POSTGRES_MAX_CONNECTIONS:-100}
+      - -c
+      - shared_buffers=${POSTGRES_SHARED_BUFFERS:-256MB}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Defina POSTGRES_DB no arquivo .env}
+      POSTGRES_USER: ${POSTGRES_USER:?Defina POSTGRES_USER no arquivo .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
+      TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+      PGTZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${POSTGRES_HOST_PORT:-5432}:${POSTGRES_CONTAINER_PORT:-5432}"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 30s
+    stop_grace_period: 60s
+    shm_size: 256mb
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "postgres"
+
+  rabbitmq:
+    <<: *service-defaults
+    image: ${RABBITMQ_IMAGE:?Defina RABBITMQ_IMAGE no arquivo .env}
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:?Defina RABBITMQ_DEFAULT_USER no arquivo .env}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:?Defina RABBITMQ_DEFAULT_PASS no arquivo .env}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST:-/development}
+      TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${RABBITMQ_AMQP_HOST_PORT:-5672}:${RABBITMQ_AMQP_CONTAINER_PORT:-5672}"
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${RABBITMQ_MANAGEMENT_HOST_PORT:-15672}:${RABBITMQ_MANAGEMENT_CONTAINER_PORT:-15672}"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - data
+    healthcheck:
+      test:
+        - CMD
+        - rabbitmq-diagnostics
+        - -q
+        - ping
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 45s
+    stop_grace_period: 60s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "rabbitmq"
+
+  redis:
+    <<: *service-defaults
+    image: ${REDIS_IMAGE:?Defina REDIS_IMAGE no arquivo .env}
+    command:
+      - sh
+      - -ec
+      - |
+        exec redis-server           --appendonly yes           --requirepass "$$REDIS_PASSWORD"           --maxmemory "${REDIS_MAXMEMORY:-256mb}"           --maxmemory-policy "${REDIS_MAXMEMORY_POLICY:-allkeys-lru}"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no arquivo .env}
+      TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${REDIS_HOST_PORT:-6379}:${REDIS_CONTAINER_PORT:-6379}"
+    volumes:
+      - redis_data:/data
+    networks:
+      - data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - redis-cli --no-auth-warning -a "$$REDIS_PASSWORD" ping | grep -q PONG
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 15s
+    stop_grace_period: 30s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "redis"
+
+  minio:
+    <<: *service-defaults
+    image: ${MINIO_IMAGE:?Defina MINIO_IMAGE no arquivo .env}
+    command:
+      - server
+      - /data
+      - --console-address
+      - ":${MINIO_CONSOLE_CONTAINER_PORT:-9001}"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?Defina MINIO_ROOT_USER no arquivo .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Defina MINIO_ROOT_PASSWORD no arquivo .env}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_REDIRECT_URL:-http://localhost:9001}
+      TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${MINIO_API_HOST_PORT:-9000}:${MINIO_API_CONTAINER_PORT:-9000}"
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${MINIO_CONSOLE_HOST_PORT:-9001}:${MINIO_CONSOLE_CONTAINER_PORT:-9001}"
+    volumes:
+      - minio_data:/data
+    networks:
+      - data
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -f
+        - http://localhost:9000/minio/health/live
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 30s
+    stop_grace_period: 30s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "minio"
+
+  ollama:
+    <<: *service-defaults
+    profiles:
+      - ai
+    image: ${OLLAMA_IMAGE:?Defina OLLAMA_IMAGE no arquivo .env}
+    environment:
+      OLLAMA_HOST: 0.0.0.0:${OLLAMA_CONTAINER_PORT:-11434}
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-5m}
+      TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${OLLAMA_HOST_PORT:-11434}:${OLLAMA_CONTAINER_PORT:-11434}"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - execution
+    healthcheck:
+      test:
+        - CMD
+        - ollama
+        - list
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    stop_grace_period: 60s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "ollama"
+
+  prometheus:
+    <<: *service-defaults
+    profiles:
+      - observability
+    image: ${PROMETHEUS_IMAGE:?Defina PROMETHEUS_IMAGE no arquivo .env}
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}
+      - --storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-5GB}
+      - --web.enable-lifecycle
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${PROMETHEUS_HOST_PORT:-9090}:${PROMETHEUS_CONTAINER_PORT:-9090}"
+    volumes:
+      - prometheus_data:/prometheus
+    networks:
+      - observability
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q --spider http://localhost:9090/-/healthy
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 30s
+    stop_grace_period: 30s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "prometheus"
+
+  loki:
+    <<: *service-defaults
+    profiles:
+      - observability
+    image: ${LOKI_IMAGE:?Defina LOKI_IMAGE no arquivo .env}
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${LOKI_HOST_PORT:-3100}:${LOKI_CONTAINER_PORT:-3100}"
+    volumes:
+      - loki_data:/loki
+    networks:
+      - observability
+    healthcheck:
+      test:
+        - CMD
+        - /usr/bin/loki
+        - -version
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 20s
+    stop_grace_period: 30s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "loki"
+
+  grafana:
+    <<: *service-defaults
+    profiles:
+      - observability
+    image: ${GRAFANA_IMAGE:?Defina GRAFANA_IMAGE no arquivo .env}
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:?Defina GRAFANA_ADMIN_USER no arquivo .env}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Defina GRAFANA_ADMIN_PASSWORD no arquivo .env}
+      GF_USERS_ALLOW_SIGN_UP: ${GRAFANA_ALLOW_SIGN_UP:-false}
+      GF_LOG_LEVEL: ${GRAFANA_LOG_LEVEL:-info}
+      GF_SERVER_HTTP_PORT: ${GRAFANA_CONTAINER_PORT:-3000}
+      TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
+    ports:
+      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${GRAFANA_HOST_PORT:-3000}:${GRAFANA_CONTAINER_PORT:-3000}"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - public
+      - observability
+    depends_on:
+      prometheus:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget -q --spider http://localhost:3000/api/health
+      interval: ${HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-5}
+      start_period: 45s
+    stop_grace_period: 30s
+    labels:
+      <<: *common-labels
+      com.stieve-software-company.service: "grafana"
+
+networks:
+  public:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_public
+    driver: bridge
+
+  application:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_application
+    driver: bridge
+    internal: true
+
+  data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_data
+    driver: bridge
+    internal: true
+
+  execution:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_execution
+    driver: bridge
+
+  observability:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_observability
+    driver: bridge
+    internal: true
+
+volumes:
+  postgres_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_postgres_data
+
+  rabbitmq_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_rabbitmq_data
+
+  redis_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_redis_data
+
+  minio_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_minio_data
+
+  ollama_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_ollama_data
+
+  prometheus_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_prometheus_data
+
+  grafana_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_grafana_data
+
+  loki_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_loki_data
