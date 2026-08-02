@@ -134,10 +134,10 @@ version
 updated_at
 ```
 
-Em caso de conflito:
+Em caso de conflito de versão:
 
 ```text
-409 Conflict
+412 Precondition Failed
 ```
 
 ---
@@ -1401,7 +1401,7 @@ update_health_status
 | Project | `approve_discovery` | Sim | `discovery.approve` |
 | Project | `archive` | Sim | `project.archive` |
 | Approval | `approve` | Sim | conforme o recurso |
-| SecurityFinding | `accept_risk` | Sim | `security.accept_risk` |
+| SecurityFinding | `accept_risk` | Sim | `security.risk.accept` |
 | Release | `approve` | Sim | `release.approve` |
 | Deployment | `approve production` | Sim | `deployment.production` |
 | Deployment | `rollback production` | Sim | `deployment.rollback` |

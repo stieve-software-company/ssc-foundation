@@ -286,6 +286,10 @@ OWNER
 ADMIN
 PROJECT_MANAGER
 HUMAN_DEVELOPER
+SECURITY_REVIEWER
+RELEASE_APPROVER
+DEPLOYMENT_OPERATOR
+AUDITOR
 VIEWER
 AGENT
 ```
@@ -326,7 +330,7 @@ deployment.staging
 deployment.production
 deployment.rollback
 
-security.accept_risk
+security.risk.accept
 audit.read
 ```
 
