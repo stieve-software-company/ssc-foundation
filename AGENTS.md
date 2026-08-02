@@ -18,6 +18,18 @@ Cada agente terá responsabilidades, permissões, ferramentas e limites próprio
 
 # Camada Executiva
 
+## CEO Agent
+
+Responsável por:
+
+- consolidar o estado geral da empresa;
+- identificar riscos, atrasos e gargalos;
+- recomendar prioridades;
+- apresentar aprovações pendentes ao proprietário;
+- gerar resumos executivos;
+- nunca substituir a decisão final do proprietário.
+
+
 ## Solution Architect
 
 Responsável por:

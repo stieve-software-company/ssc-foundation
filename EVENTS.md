@@ -43,360 +43,360 @@ Todo evento deverá conter:
   }
 }
 ```
-Eventos de Projetos
-ProjectCreated
+## Eventos de Projetos
+### ProjectCreated
 
 Emitido quando um projeto é criado.
 
-ProjectUpdated
+### ProjectUpdated
 
 Emitido quando informações gerais do projeto são alteradas.
 
-ProjectApproved
+### ProjectApproved
 
 Emitido quando o Discovery Report é aprovado.
 
-ProjectPaused
+### ProjectPaused
 
 Emitido quando o projeto é pausado.
 
-ProjectArchived
+### ProjectArchived
 
 Emitido quando o projeto é arquivado.
 
-Eventos de Referências
-ReferenceUploaded
+## Eventos de Referências
+### ReferenceUploaded
 
 Emitido quando um arquivo, link ou outra referência é adicionada.
 
-ReferenceProcessingStarted
+### ReferenceProcessingStarted
 
 Emitido quando o processamento da referência começa.
 
-ReferenceProcessed
+### ReferenceProcessed
 
 Emitido quando a referência foi analisada com sucesso.
 
-ReferenceProcessingFailed
+### ReferenceProcessingFailed
 
 Emitido quando ocorre erro no processamento.
 
-InformationExtracted
+### InformationExtracted
 
 Emitido quando informações relevantes são extraídas de uma referência.
 
-Eventos de Discovery
-DiscoveryStarted
+## Eventos de Discovery
+### DiscoveryStarted
 
 Emitido quando o Solution Architect inicia a descoberta.
 
-InterviewQuestionCreated
+### InterviewQuestionCreated
 
 Emitido quando uma nova pergunta é criada.
 
-InterviewAnswerReceived
+### InterviewAnswerReceived
 
 Emitido quando o usuário responde uma pergunta.
 
-RequirementExtracted
+### RequirementExtracted
 
 Emitido quando um requisito é identificado.
 
-BusinessRuleExtracted
+### BusinessRuleExtracted
 
 Emitido quando uma regra de negócio é identificada.
 
-DiscoveryReportGenerated
+### DiscoveryReportGenerated
 
 Emitido quando o relatório de descoberta é gerado.
 
-DiscoveryChangesRequested
+### DiscoveryChangesRequested
 
 Emitido quando o usuário solicita ajustes.
 
-DiscoveryApproved
+### DiscoveryApproved
 
 Emitido quando o usuário aprova o relatório.
 
-Eventos de Requisitos
-RequirementCreated
+## Eventos de Requisitos
+### RequirementCreated
 
 Emitido quando um requisito é criado.
 
-RequirementUpdated
+### RequirementUpdated
 
 Emitido quando um requisito é alterado.
 
-RequirementApproved
+### RequirementApproved
 
 Emitido quando um requisito é aprovado.
 
-RequirementRejected
+### RequirementRejected
 
 Emitido quando um requisito é rejeitado.
 
-Eventos de Tarefas
-TaskCreated
+## Eventos de Tarefas
+### TaskCreated
 
 Emitido quando uma tarefa é criada.
 
-TaskQueued
+### TaskQueued
 
 Emitido quando uma tarefa entra na fila.
 
-TaskAssigned
+### TaskAssigned
 
 Emitido quando uma tarefa é atribuída a um agente.
 
-TaskStarted
+### TaskStarted
 
 Emitido quando a execução começa.
 
-TaskBlocked
+### TaskBlocked
 
 Emitido quando a tarefa encontra um impedimento.
 
-TaskWaitingApproval
+### TaskWaitingApproval
 
 Emitido quando a tarefa aguarda aprovação humana.
 
-TaskCompleted
+### TaskCompleted
 
 Emitido quando a tarefa é concluída.
 
-TaskFailed
+### TaskFailed
 
 Emitido quando a tarefa falha.
 
-TaskRetryScheduled
+### TaskRetryScheduled
 
 Emitido quando uma nova tentativa é agendada.
 
-TaskCancelled
+### TaskCancelled
 
 Emitido quando a tarefa é cancelada.
 
-Eventos de Agentes
-AgentRegistered
+## Eventos de Agentes
+### AgentRegistered
 
 Emitido quando um agente é registrado.
 
-AgentStarted
+### AgentStarted
 
 Emitido quando o agente inicia.
 
-AgentOnline
+### AgentOnline
 
 Emitido quando o agente fica disponível.
 
-AgentReserved
+### AgentReserved
 
 Emitido quando o agente é reservado para uma tarefa.
 
-AgentExecutionStarted
+### AgentExecutionStarted
 
 Emitido quando o agente inicia uma execução.
 
-AgentExecutionCompleted
+### AgentExecutionCompleted
 
 Emitido quando a execução termina com sucesso.
 
-AgentExecutionFailed
+### AgentExecutionFailed
 
 Emitido quando a execução falha.
 
-AgentBlocked
+### AgentBlocked
 
 Emitido quando o agente é bloqueado.
 
-AgentOffline
+### AgentOffline
 
 Emitido quando o agente fica indisponível.
 
-Eventos de Workflows
-WorkflowCreated
+## Eventos de Workflows
+### WorkflowCreated
 
 Emitido quando um workflow é criado.
 
-WorkflowStarted
+### WorkflowStarted
 
 Emitido quando o workflow inicia.
 
-WorkflowStepStarted
+### WorkflowStepStarted
 
 Emitido quando uma etapa inicia.
 
-WorkflowStepCompleted
+### WorkflowStepCompleted
 
 Emitido quando uma etapa termina.
 
-WorkflowPaused
+### WorkflowPaused
 
 Emitido quando o workflow é pausado.
 
-WorkflowResumed
+### WorkflowResumed
 
 Emitido quando o workflow é retomado.
 
-WorkflowCompleted
+### WorkflowCompleted
 
 Emitido quando o workflow termina.
 
-WorkflowFailed
+### WorkflowFailed
 
 Emitido quando o workflow falha.
 
-WorkflowCancelled
+### WorkflowCancelled
 
 Emitido quando o workflow é cancelado.
 
-Eventos de Qualidade
-TestSuiteStarted
+## Eventos de Qualidade
+### TestSuiteStarted
 
 Emitido quando uma suíte de testes inicia.
 
-TestSuitePassed
+### TestSuitePassed
 
 Emitido quando os testes são aprovados.
 
-TestSuiteFailed
+### TestSuiteFailed
 
 Emitido quando os testes falham.
 
-CoverageCalculated
+### CoverageCalculated
 
 Emitido quando a cobertura é calculada.
 
-QualityGateApproved
+### QualityGateApproved
 
 Emitido quando os critérios de qualidade são atendidos.
 
-QualityGateRejected
+### QualityGateRejected
 
 Emitido quando os critérios não são atendidos.
 
-Eventos de Segurança
-SecurityReviewStarted
+## Eventos de Segurança
+### SecurityReviewStarted
 
 Emitido quando a revisão de segurança começa.
 
-VulnerabilityDetected
+### VulnerabilityDetected
 
 Emitido quando uma vulnerabilidade é encontrada.
 
-SecretDetected
+### SecretDetected
 
 Emitido quando um segredo é detectado no código.
 
-SecurityReviewApproved
+### SecurityReviewApproved
 
 Emitido quando a revisão é aprovada.
 
-SecurityReviewRejected
+### SecurityReviewRejected
 
 Emitido quando a revisão é rejeitada.
 
-Eventos de Releases
-ReleaseCreated
+## Eventos de Releases
+### ReleaseCreated
 
 Emitido quando uma release é criada.
 
-ReleaseValidationStarted
+### ReleaseValidationStarted
 
 Emitido quando a validação começa.
 
-ReleaseApproved
+### ReleaseApproved
 
 Emitido quando a release é aprovada.
 
-ReleaseRejected
+### ReleaseRejected
 
 Emitido quando a release é rejeitada.
 
-ReleasePublished
+### ReleasePublished
 
 Emitido quando a release é publicada.
 
-Eventos de Deployment
-DeploymentRequested
+## Eventos de Deployment
+### DeploymentRequested
 
 Emitido quando um deployment é solicitado.
 
-DeploymentApproved
+### DeploymentApproved
 
 Emitido quando o deployment é autorizado.
 
-DeploymentStarted
+### DeploymentStarted
 
 Emitido quando a publicação começa.
 
-DeploymentCompleted
+### DeploymentCompleted
 
 Emitido quando a publicação termina.
 
-DeploymentFailed
+### DeploymentFailed
 
 Emitido quando a publicação falha.
 
-HealthCheckPassed
+### HealthCheckPassed
 
 Emitido quando os testes de saúde são aprovados.
 
-HealthCheckFailed
+### HealthCheckFailed
 
 Emitido quando os testes de saúde falham.
 
-RollbackStarted
+### RollbackStarted
 
 Emitido quando o rollback começa.
 
-RollbackCompleted
+### RollbackCompleted
 
 Emitido quando o rollback termina.
 
-RollbackFailed
+### RollbackFailed
 
 Emitido quando o rollback falha.
 
-Eventos de Aprovação Humana
-HumanApprovalRequested
+## Eventos de Aprovação Humana
+### HumanApprovalRequested
 
 Emitido quando uma decisão humana é necessária.
 
-HumanApprovalGranted
+### HumanApprovalGranted
 
 Emitido quando a ação é aprovada.
 
-HumanApprovalRejected
+### HumanApprovalRejected
 
 Emitido quando a ação é rejeitada.
 
-HumanApprovalExpired
+### HumanApprovalExpired
 
 Emitido quando a solicitação expira.
 
-Eventos de Infraestrutura
-ServiceStarted
+## Eventos de Infraestrutura
+### ServiceStarted
 
 Emitido quando um serviço inicia.
 
-ServiceStopped
+### ServiceStopped
 
 Emitido quando um serviço para.
 
-ServiceUnhealthy
+### ServiceUnhealthy
 
 Emitido quando um serviço apresenta falha.
 
-ResourceLimitReached
+### ResourceLimitReached
 
 Emitido quando CPU, memória, GPU ou armazenamento alcança o limite.
 
-StorageLow
+### StorageLow
 
 Emitido quando o espaço disponível está baixo.
 
-Entrega e confiabilidade
+## Entrega e confiabilidade
 
 Os eventos deverão suportar:
 
@@ -408,7 +408,7 @@ dead-letter queue;
 versionamento;
 rastreabilidade;
 correlação entre execuções.
-Regras
+## Regras
 Eventos publicados não deverão ser alterados.
 Mudanças de estrutura deverão gerar uma nova versão.
 Consumidores deverão ignorar campos desconhecidos.

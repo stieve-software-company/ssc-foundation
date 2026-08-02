@@ -31,7 +31,7 @@ BACKLOG
   ↓
 DESENVOLVIMENTO
 ```
-Responsável principal
+## Responsável principal
 
 O Solution Architect será responsável por conduzir o processo de descoberta.
 
@@ -42,7 +42,7 @@ Knowledge Manager
 Tech Lead
 Change Manager
 Usuário responsável pelo projeto
-Criação inicial do projeto
+## Criação inicial do projeto
 
 A criação deverá registrar:
 
@@ -57,9 +57,9 @@ Responsável
 Prioridade
 Nível de confidencialidade
 Tipo de solução
-Público usuário
+### Público usuário
 Data de criação
-Tipos de solução
+## Tipos de solução
 
 O projeto poderá ser classificado como:
 
@@ -74,7 +74,7 @@ Serviço de backend
 Biblioteca
 Ferramenta de dados
 Outro
-Contexto inicial
+## Contexto inicial
 
 O usuário deverá poder explicar livremente:
 
@@ -86,7 +86,7 @@ Quais sistemas são utilizados
 Quais resultados são esperados
 Quais limitações existem
 O que não deverá fazer parte do projeto
-Central de referências
+## Central de referências
 
 O usuário poderá enviar:
 
@@ -108,7 +108,7 @@ Repositórios Git
 Documentações de APIs
 Exemplos de sistemas
 Normas e regulamentos
-Metadados das referências
+## Metadados das referências
 
 Cada referência deverá registrar:
 
@@ -128,7 +128,7 @@ Hash do arquivo
 Estado de processamento
 Permissão de uso
 Observações
-Categorias de referência
+## Categorias de referência
 
 Uma referência poderá ser classificada como:
 
@@ -144,7 +144,7 @@ Processo atual
 Integração
 Restrição
 Regulamentação
-Estados das referências
+## Estados das referências
 UPLOADED
 QUEUED
 PROCESSING
@@ -152,7 +152,7 @@ PROCESSED
 FAILED
 NEEDS_REVIEW
 ARCHIVED
-Processamento das referências
+## Processamento das referências
 
 O processamento deverá:
 
@@ -166,7 +166,7 @@ Identificar regras.
 Identificar requisitos.
 Identificar dúvidas.
 Armazenar o resultado no Knowledge Vault.
-Entrevista inteligente
+## Entrevista inteligente
 
 A entrevista deverá ser adaptativa.
 
@@ -180,7 +180,7 @@ solicitar exemplos quando necessário;
 pedir confirmação em pontos críticos;
 registrar todas as respostas;
 atualizar a especificação progressivamente.
-Tipos de perguntas
+## Tipos de perguntas
 
 As perguntas poderão aceitar:
 
@@ -196,7 +196,7 @@ Confirmação
 Upload de arquivo
 Seleção de usuário
 Seleção de processo
-Regras da entrevista
+## Regras da entrevista
 Não repetir perguntas respondidas.
 Explicar termos técnicos.
 Permitir salvar e continuar depois.
@@ -205,24 +205,24 @@ Registrar a origem de cada resposta.
 Diferenciar fato, hipótese e decisão.
 Destacar respostas contraditórias.
 Solicitar aprovação para decisões importantes.
-Extração de requisitos
+## Extração de requisitos
 
 Os requisitos poderão ser classificados como:
 
 Funcionais
 Não funcionais
-Regras de negócio
-Integrações
+### Regras de negócio
+### Integrações
 Segurança
 Desempenho
 Disponibilidade
-Auditoria
+## Auditoria
 Usabilidade
 Acessibilidade
 Privacidade
 Infraestrutura
 Operacionais
-Estrutura de um requisito
+## Estrutura de um requisito
 
 Cada requisito deverá possuir:
 
@@ -234,13 +234,13 @@ Prioridade
 Origem
 Responsável
 Estado
-Critérios de aceite
+## Critérios de aceite
 Dependências
-Riscos
+### Riscos
 Referências relacionadas
 Data de criação
 Histórico de alterações
-Estados dos requisitos
+## Estados dos requisitos
 DRAFT
 PROPOSED
 NEEDS_REVIEW
@@ -249,71 +249,71 @@ REJECTED
 IMPLEMENTED
 VERIFIED
 DEPRECATED
-Discovery Report
+## Discovery Report
 
 O Discovery Report deverá conter:
 
-Resumo executivo
+### Resumo executivo
 
 Descrição simples da solução proposta.
 
-Problema
+### Problema
 
 Descrição do problema atual e suas causas.
 
-Objetivos
+### Objetivos
 
 Resultados que o projeto deverá alcançar.
 
-Público usuário
+### Público usuário
 
 Perfis que utilizarão o sistema.
 
-Processos
+### Processos
 
 Processos atuais e processos propostos.
 
-Escopo
+### Escopo
 
 Funcionalidades incluídas na primeira versão.
 
-Fora do escopo
+### Fora do escopo
 
 Funcionalidades explicitamente excluídas.
 
-Requisitos funcionais
+### Requisitos funcionais
 
 Comportamentos esperados do sistema.
 
-Requisitos não funcionais
+### Requisitos não funcionais
 
 Segurança, desempenho, disponibilidade, acessibilidade e outros.
 
-Regras de negócio
+### Regras de negócio
 
 Regras que controlam decisões e validações.
 
-Integrações
+### Integrações
 
 Sistemas, APIs, serviços e bases externas.
 
-Restrições
+### Restrições
 
 Limitações técnicas, financeiras, legais ou operacionais.
 
-Riscos
+### Riscos
 
 Riscos funcionais, técnicos, de segurança e infraestrutura.
 
-Dúvidas pendentes
+### Dúvidas pendentes
 
 Informações ainda não definidas.
 
-Arquitetura inicial
+### Arquitetura inicial
 
 Proposta preliminar de componentes e tecnologias.
 
-Complexidade
+### Complexidade
 
 Classificação inicial:
 
@@ -321,11 +321,11 @@ Baixa
 Média
 Alta
 Muito alta
-Próximos passos
+### Próximos passos
 
 Atividades necessárias após aprovação.
 
-Fluxo de aprovação
+## Fluxo de aprovação
 
 Após a geração do Discovery Report, o usuário poderá:
 
@@ -336,7 +336,7 @@ Adicionar referências
 Reabrir entrevista
 Salvar como rascunho
 Cancelar o projeto
-Regra de bloqueio
+## Regra de bloqueio
 
 O projeto não poderá entrar em desenvolvimento enquanto estiver em um destes estados:
 
@@ -351,7 +351,7 @@ CANCELLED
 
 Somente projetos com estado APPROVED poderão avançar para planejamento técnico.
 
-Estados do Discovery
+## Estados do Discovery
 DRAFT
 COLLECTING_CONTEXT
 PROCESSING_REFERENCES
@@ -362,7 +362,7 @@ WAITING_APPROVAL
 CHANGES_REQUESTED
 APPROVED
 CANCELLED
-Project Knowledge Vault
+## Project Knowledge Vault
 
 O Knowledge Vault deverá armazenar:
 
@@ -382,7 +382,7 @@ Project Vault
 ├── releases
 ├── incidents
 └── lessons-learned
-Rastreabilidade
+## Rastreabilidade
 
 Toda informação relevante deverá registrar sua origem.
 
@@ -403,7 +403,7 @@ Código
 Teste
   ↓
 Release
-Auditoria
+## Auditoria
 
 O processo deverá registrar:
 
@@ -416,7 +416,7 @@ Quais respostas foram recebidas
 Quais requisitos foram criados
 Quem aprovou o Discovery Report
 Quando a aprovação ocorreu
-Eventos principais
+## Eventos principais
 ProjectCreated
 ReferenceUploaded
 ReferenceProcessingStarted
@@ -429,7 +429,7 @@ BusinessRuleExtracted
 DiscoveryReportGenerated
 DiscoveryChangesRequested
 DiscoveryApproved
-Critérios de aceite
+## Critérios de aceite
 O usuário consegue criar um projeto.
 O usuário consegue explicar a ideia em linguagem natural.
 O usuário consegue enviar referências.

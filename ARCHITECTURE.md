@@ -12,13 +12,13 @@ A plataforma deverá administrar múltiplos projetos simultaneamente, mantendo i
 Usuário
    |
    v
-SSC Mission Control
+### SSC Mission Control
    |
    v
-API Gateway
+### API Gateway
    |
    v
-CompanyOS
+### CompanyOS
    |
    +-------------------------------+
    |                               |
@@ -35,10 +35,10 @@ Project Management           Executive Layer
    +-------------------------------+
    |
    v
-Workflow Engine
+## Workflow Engine
    |
    v
-Event Bus
+## Event Bus
    |
    +-------------------------------+
    |         |         |           |
@@ -52,8 +52,8 @@ Workspace isolado
    v
 Git + Testes + Build + Artefatos
 ```
-Componentes principais
-SSC Mission Control
+## Componentes principais
+### SSC Mission Control
 
 Portal Web utilizado para administrar a empresa.
 
@@ -74,7 +74,7 @@ O Mission Control não deverá executar comandos diretamente na máquina.
 
 Todas as ações deverão passar pela API do CompanyOS.
 
-API Gateway
+### API Gateway
 
 Ponto de entrada das requisições externas.
 
@@ -90,7 +90,7 @@ encaminhar conexões em tempo real.
 A API pública será versionada inicialmente em:
 
 /api/v1
-CompanyOS
+### CompanyOS
 
 Núcleo operacional da Stieve Software Company.
 
@@ -112,7 +112,7 @@ Nenhum agente deverá controlar diretamente outro agente.
 
 Toda coordenação deverá passar pelo CompanyOS, pelo Workflow Engine ou pelo Event Bus.
 
-Project Management
+### Project Management
 
 Responsável pelo ciclo de vida dos projetos.
 
@@ -133,7 +133,7 @@ releases;
 deployments;
 histórico;
 auditoria.
-Isolamento dos projetos
+## Isolamento dos projetos
 
 Os projetos deverão ser isolados logicamente desde o início.
 
@@ -156,7 +156,7 @@ Um agente deverá receber explicitamente o identificador do projeto no qual pode
 
 O acesso a arquivos, dados e ferramentas deverá ser limitado ao projeto autorizado.
 
-Project Knowledge Vault
+## Project Knowledge Vault
 
 Cada projeto possuirá uma base própria de conhecimento.
 
@@ -182,7 +182,7 @@ Os agentes deverão ser preferencialmente stateless.
 
 A memória persistente deverá permanecer no Knowledge Vault, e não dentro do processo do agente.
 
-Executive Layer
+## Executive Layer
 
 A camada executiva será responsável por análise, planejamento e aprovação técnica.
 
@@ -199,7 +199,7 @@ Knowledge Manager
 
 Esses agentes não deverão alterar código sem uma tarefa e permissão específicas.
 
-Engineering Layer
+## Engineering Layer
 
 A camada de engenharia executará tarefas técnicas.
 
@@ -225,7 +225,7 @@ limites;
 fila;
 estado;
 histórico de execução.
-Agent Runtime
+## Agent Runtime
 
 O Agent Runtime será responsável por executar os agentes.
 
@@ -262,7 +262,7 @@ Resultado é validado
 Commit, artefato ou relatório é registrado
    ↓
 Evento de conclusão é publicado
-Ferramentas dos agentes
+## Ferramentas dos agentes
 
 As ferramentas deverão ser disponibilizadas por interfaces controladas.
 
@@ -284,7 +284,7 @@ registro de decisão.
 
 O agente não deverá receber acesso irrestrito ao shell da máquina principal.
 
-Workflow Engine
+## Workflow Engine
 
 O Workflow Engine será responsável pelos processos de longa duração.
 
@@ -314,7 +314,7 @@ cancelamento;
 aprovação humana;
 compensação;
 histórico.
-Event Bus
+## Event Bus
 
 A plataforma será orientada por eventos.
 
@@ -328,7 +328,7 @@ RabbitMQ
 
 Isso permitirá substituir o mecanismo de eventos futuramente sem reescrever os serviços principais.
 
-Regras dos eventos
+## Regras dos eventos
 
 Todos os eventos deverão possuir:
 
@@ -347,7 +347,7 @@ Os consumidores deverão ser idempotentes.
 
 Falhas permanentes deverão ser encaminhadas para uma dead-letter queue.
 
-API
+## API
 
 A API será inicialmente desenvolvida com FastAPI.
 
@@ -381,7 +381,7 @@ Endpoints iniciais previstos:
 /api/v1/releases
 /api/v1/deployments
 /api/v1/audit
-Atualizações em tempo real
+## Atualizações em tempo real
 
 O Mission Control deverá receber atualizações em tempo real.
 
@@ -399,8 +399,8 @@ aprovações pendentes;
 progresso de workflows;
 deployments;
 alertas de infraestrutura.
-Persistência
-PostgreSQL
+## Persistência
+### PostgreSQL
 
 Armazenará dados estruturados:
 
@@ -415,7 +415,7 @@ releases;
 deployments;
 auditoria;
 metadados.
-Armazenamento de objetos
+### Armazenamento de objetos
 
 Armazenará:
 
@@ -430,7 +430,7 @@ relatórios.
 
 Poderá ser utilizado MinIO ou armazenamento compatível.
 
-Redis
+### Redis
 
 Poderá ser utilizado para:
 
@@ -442,7 +442,7 @@ sessões temporárias.
 
 Redis não deverá ser a fonte definitiva de dados importantes.
 
-Git e workspaces
+## Git e workspaces
 
 Cada projeto deverá possuir um repositório Git próprio.
 
@@ -464,7 +464,7 @@ commits deverão indicar tarefa e agente;
 merges deverão passar pelos controles definidos;
 releases deverão possuir tags;
 push forçado na branch principal será proibido.
-Execução isolada
+## Execução isolada
 
 As tarefas técnicas deverão ser executadas preferencialmente em containers.
 
@@ -480,7 +480,7 @@ rede limitada;
 logs;
 identificação do projeto;
 identificação da tarefa.
-Provedor de IA
+## Provedor de IA
 
 A plataforma deverá utilizar uma interface abstrata para provedores de IA.
 
@@ -501,7 +501,7 @@ outros modelos locais;
 servidores de inferência;
 APIs externas opcionais;
 fallback entre modelos.
-Segurança
+## Segurança
 
 A arquitetura deverá aplicar:
 
@@ -516,7 +516,7 @@ auditoria obrigatória;
 validação de uploads;
 revisão de dependências;
 bloqueio de comandos perigosos.
-Observabilidade
+## Observabilidade
 
 Todos os serviços deverão expor:
 
@@ -543,7 +543,7 @@ Tecnologias previstas:
 Prometheus
 Grafana
 Loki
-Infraestrutura inicial
+## Infraestrutura inicial
 
 A primeira versão será executada em uma única VM Ubuntu Server utilizando Docker Compose.
 
@@ -565,7 +565,7 @@ Docker Compose
 
 A arquitetura deverá permitir evolução futura para múltiplas máquinas ou Kubernetes, sem que isso seja necessário na primeira versão.
 
-Ambientes
+## Ambientes
 
 Cada projeto poderá possuir:
 
@@ -576,7 +576,7 @@ production.
 
 Produção deverá permanecer separada do ambiente onde os agentes desenvolvem.
 
-Releases e deployments
+## Releases e deployments
 
 Fluxo esperado:
 
@@ -601,7 +601,7 @@ Produção
 Health checks
    ↓
 Sucesso ou rollback
-Decisões arquiteturais
+## Decisões arquiteturais
 
 Decisões importantes deverão ser registradas em ADRs.
 
@@ -609,17 +609,17 @@ Mudanças significativas em projetos deverão ser registradas em RFCs.
 
 Nenhum agente poderá alterar uma decisão aprovada sem criar uma nova proposta rastreável.
 
-Stack inicial
+## Stack inicial
 Ubuntu Server
 Docker
 Docker Compose
 Python 3.12
 FastAPI
-PostgreSQL
+### PostgreSQL
 SQLAlchemy
 Alembic
 RabbitMQ
-Redis
+### Redis
 Ollama
 MinIO
 Git
@@ -628,7 +628,7 @@ Prometheus
 Grafana
 Loki
 MkDocs
-Restrições iniciais
+## Restrições iniciais
 Priorizar tecnologias gratuitas e open source.
 Não depender obrigatoriamente de APIs pagas.
 Não utilizar Kubernetes na primeira versão.
@@ -636,7 +636,7 @@ Não permitir deploy autônomo em produção.
 Não disponibilizar shell irrestrito aos agentes.
 Não compartilhar memória entre projetos.
 Não armazenar segredos no repositório.
-Critérios de aceite
+## Critérios de aceite
 
 A arquitetura será considerada definida quando:
 

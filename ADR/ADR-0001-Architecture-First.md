@@ -88,48 +88,48 @@ Release
         ↓
 Deployment
 ```
-Regras
-Regra 1
+## Regras
+### Regra 1
 
 Nenhum projeto poderá iniciar o desenvolvimento antes da aprovação do Discovery Report.
 
-Regra 2
+### Regra 2
 
 Toda decisão arquitetural relevante deverá gerar uma ADR.
 
-Regra 3
+### Regra 3
 
 Toda mudança relevante em um projeto existente deverá gerar uma RFC.
 
-Regra 4
+### Regra 4
 
 Toda funcionalidade deverá possuir critérios de aceite.
 
-Regra 5
+### Regra 5
 
 Toda implementação deverá estar associada a uma tarefa rastreável.
 
-Regra 6
+### Regra 6
 
 Toda entrega deverá possuir evidências de teste.
 
-Regra 7
+### Regra 7
 
 Toda release deverá passar por validação de qualidade e segurança.
 
-Regra 8
+### Regra 8
 
 Todo deployment em produção deverá exigir aprovação humana.
 
-Regra 9
+### Regra 9
 
 Nenhum agente poderá alterar silenciosamente decisões já aprovadas.
 
-Regra 10
+### Regra 10
 
 A documentação deverá evoluir junto com o código.
 
-Exceções
+## Exceções
 
 Correções emergenciais poderão utilizar um processo reduzido, mas ainda deverão registrar:
 
@@ -144,7 +144,7 @@ documentação posterior.
 
 A exceção deverá ser registrada e auditada.
 
-Consequências positivas
+## Consequências positivas
 Maior consistência entre serviços
 Redução de retrabalho
 Melhor documentação
@@ -155,25 +155,25 @@ Melhor integração entre agentes
 Menor dependência de um modelo específico de IA
 Evolução mais previsível
 Facilidade para adicionar novos projetos
-Consequências negativas
+## Consequências negativas
 Maior esforço inicial de planejamento
 Entregas visuais podem demorar mais no início
 Exige disciplina na atualização dos documentos
 Algumas decisões precisarão de aprovação humana
-Alternativas consideradas
-Implementar primeiro e documentar depois
+## Alternativas consideradas
+### Implementar primeiro e documentar depois
 
 Rejeitada porque aumenta o risco de documentação incompleta e decisões inconsistentes.
 
-Permitir autonomia total aos agentes
+### Permitir autonomia total aos agentes
 
 Rejeitada para decisões críticas, pois poderia gerar alterações sem controle, auditoria ou aprovação.
 
-Usar somente prompts como especificação
+### Usar somente prompts como especificação
 
 Rejeitada porque prompts isolados não oferecem rastreabilidade, versionamento e contexto suficiente.
 
-Aplicação
+## Aplicação
 
 Esta decisão se aplica a:
 
@@ -189,7 +189,7 @@ Workflows
 Plugins
 Infraestrutura
 Projetos desenvolvidos pela SSC
-Critérios de conformidade
+## Critérios de conformidade
 
 Uma funcionalidade estará em conformidade quando possuir:
 
@@ -201,7 +201,7 @@ documentação atualizada;
 implementação rastreável;
 testes;
 revisão de segurança quando aplicável.
-Revisão
+## Revisão
 
 Esta ADR poderá ser revisada caso o processo se torne excessivamente burocrático ou não atenda à evolução da plataforma.
 

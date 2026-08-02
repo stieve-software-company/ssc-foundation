@@ -37,7 +37,7 @@ Definir como uma ideia será transformada em uma especificação completa e apro
 
 ### Estado
 
-Em andamento.
+Concluída.
 
 ---
 
