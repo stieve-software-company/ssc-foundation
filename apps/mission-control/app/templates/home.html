@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Mission Control | CompanyOS</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body class="app-page">
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">Stieve Software Company</p>
+      <h1>Mission Control</h1>
+    </div>
+
+    <form method="post" action="/logout">
+      <button class="secondary-button" type="submit">Sair</button>
+    </form>
+  </header>
+
+  <main class="app-shell">
+    <section class="welcome-card">
+      <p class="eyebrow">Primeiro acesso concluído</p>
+      <h2>Bem-vindo, {{ username }}.</h2>
+      <p>
+        A primeira área protegida do CompanyOS está funcionando.
+        Os próximos módulos serão conectados a partir desta base.
+      </p>
+    </section>
+
+    <section class="module-grid" aria-label="Módulos planejados">
+      <article class="module-card active">
+        <span class="module-number">01</span>
+        <h3>Infraestrutura</h3>
+        <p>PostgreSQL, RabbitMQ, Redis e MinIO em operação.</p>
+        <span class="module-state">Ativo</span>
+      </article>
+
+      <article class="module-card">
+        <span class="module-number">02</span>
+        <h3>Projetos</h3>
+        <p>Criação, discovery, requisitos e conhecimento do projeto.</p>
+        <span class="module-state">Planejado</span>
+      </article>
+
+      <article class="module-card">
+        <span class="module-number">03</span>
+        <h3>Agentes</h3>
+        <p>Catálogo, execução, tarefas e acompanhamento em tempo real.</p>
+        <span class="module-state">Planejado</span>
+      </article>
+
+      <article class="module-card">
+        <span class="module-number">04</span>
+        <h3>Operações</h3>
+        <p>Eventos, filas, aprovações, releases e deployments.</p>
+        <span class="module-state">Planejado</span>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

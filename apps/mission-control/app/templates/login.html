@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Acesso | SSC Mission Control</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-layout">
+    <section class="brand-panel" aria-label="Apresentação do CompanyOS">
+      <div class="brand-mark" aria-hidden="true">SSC</div>
+
+      <div class="brand-copy">
+        <p class="eyebrow">Stieve Software Company</p>
+        <h1>Mission Control</h1>
+        <p class="brand-description">
+          O centro de comando para planejar, desenvolver, operar e evoluir
+          projetos com agentes de inteligência artificial.
+        </p>
+      </div>
+
+      <div class="system-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>CompanyOS online</span>
+      </div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-card">
+        <header class="login-header">
+          <p class="eyebrow">Acesso seguro</p>
+          <h2>Entre no sistema</h2>
+          <p>Use suas credenciais locais para acessar o Mission Control.</p>
+        </header>
+
+        {% if error %}
+        <div class="alert" role="alert">
+          {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="/login" class="login-form">
+          <label for="username">Usuário</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            value="{{ username }}"
+            autocomplete="username"
+            required
+            autofocus
+          >
+
+          <label for="password">Senha</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+
+          <button type="submit">Acessar Mission Control</button>
+        </form>
+
+        <footer class="login-footer">
+          <span>Ambiente de desenvolvimento</span>
+          <span>SSC v0.1</span>
+        </footer>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
