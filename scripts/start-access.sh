@@ -47,12 +47,16 @@ check_requirements() {
   [[ -s "${BASE_COMPOSE}" ]] || fail "Arquivo ausente: ${BASE_COMPOSE}"
   [[ -s "${ACCESS_COMPOSE}" ]] || fail "Arquivo ausente: ${ACCESS_COMPOSE}"
 
+  local key
   for key in \
+    DATABASE_URL \
+    REDIS_URL \
+    RABBITMQ_URL \
     SSC_ADMIN_USERNAME \
     SSC_ADMIN_PASSWORD_HASH \
     SSC_SESSION_SECRET; do
     if ! grep -q "^${key}=." "${ENV_FILE}"; then
-      fail "Variável ausente no .env: ${key}. Execute scripts/configure-access.py."
+      fail "Variável ausente no .env: ${key}"
     fi
   done
 
@@ -60,8 +64,23 @@ check_requirements() {
     || fail "Docker daemon não está acessível."
 }
 
+validate_compose() {
+  info "Validando o Compose do Mission Control."
+
+  (
+    cd "${PROJECT_ROOT}"
+    docker compose \
+      --env-file "${ENV_FILE}" \
+      -f "${BASE_COMPOSE}" \
+      -f "${ACCESS_COMPOSE}" \
+      config --quiet
+  )
+
+  ok "Compose válido."
+}
+
 start_service() {
-  info "Construindo e iniciando o SSC Mission Control."
+  info "Construindo e iniciando o Mission Control v0.2."
 
   (
     cd "${PROJECT_ROOT}"
@@ -74,7 +93,11 @@ start_service() {
       -d \
       --build \
       --wait \
-      --wait-timeout 240 \
+      --wait-timeout 300 \
+      postgres \
+      rabbitmq \
+      redis \
+      minio \
       mission-control
   )
 
@@ -91,8 +114,7 @@ show_access_url() {
   vm_ip="$(hostname -I 2>/dev/null | awk '{print $1}')"
 
   printf '\n'
-  printf 'Tela de acesso disponível em:\n'
-  printf '\n'
+  printf 'Mission Control v0.2 disponível em:\n\n'
 
   if [[ "${bind_address}" == "127.0.0.1" ]]; then
     printf '  http://127.0.0.1:%s\n' "${port}"
@@ -102,16 +124,15 @@ show_access_url() {
     printf '  http://IP-DA-VM:%s\n' "${port}"
   fi
 
-  printf '\n'
-  printf 'Health check:\n'
-  printf '  http://%s:%s/health\n' "${vm_ip:-IP-DA-VM}" "${port}"
-  printf '\n'
+  printf '\nHealth check:\n'
+  printf '  http://%s:%s/health\n\n' "${vm_ip:-IP-DA-VM}" "${port}"
 }
 
 main() {
-  info "Iniciando a primeira interface do CompanyOS."
+  info "Iniciando o painel administrativo do CompanyOS."
 
   check_requirements
+  validate_compose
   start_service
   show_access_url
 }

@@ -4,16 +4,34 @@ services:
       context: ./apps/mission-control
       dockerfile: Dockerfile
     environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL não configurada}
+      REDIS_URL: ${REDIS_URL:?REDIS_URL não configurada}
+      RABBITMQ_URL: ${RABBITMQ_URL:?RABBITMQ_URL não configurada}
+      MINIO_BASE_URL: ${MINIO_BASE_URL:-http://minio:9000}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       SSC_ADMIN_USERNAME: ${SSC_ADMIN_USERNAME:?SSC_ADMIN_USERNAME não configurado}
       SSC_ADMIN_PASSWORD_HASH: ${SSC_ADMIN_PASSWORD_HASH:?SSC_ADMIN_PASSWORD_HASH não configurado}
       SSC_SESSION_SECRET: ${SSC_SESSION_SECRET:?SSC_SESSION_SECRET não configurado}
       SSC_SESSION_MAX_AGE_SECONDS: ${SSC_SESSION_MAX_AGE_SECONDS:-28800}
       SSC_COOKIE_SECURE: ${SSC_COOKIE_SECURE:-false}
+      SSC_ENVIRONMENT: ${SSC_ENVIRONMENT:-development}
     ports:
       - "${SSC_ACCESS_BIND_ADDRESS:-0.0.0.0}:${SSC_ACCESS_HOST_PORT:-8080}:8080"
     networks:
       - public
       - application
+      - data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
     restart: unless-stopped
     init: true
     security_opt:
@@ -31,10 +49,13 @@ services:
           )
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 15s
+      retries: 12
+      start_period: 25s
     logging:
       driver: json-file
       options:
         max-size: 10m
         max-file: "3"
+    labels:
+      com.stieve-software-company.platform: "companyos"
+      com.stieve-software-company.service: "mission-control"

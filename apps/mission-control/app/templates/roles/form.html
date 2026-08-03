@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% set editing = edited_role is not none %}
+{% set protected = editing and edited_role.slug == "admin" %}
+{% block title %}{{ "Editar perfil" if editing else "Novo perfil" }}{% endblock %}
+{% block page_name %}{{ "Editar perfil" if editing else "Novo perfil" }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Autorização</p>
+    <h1>{{ "Editar perfil" if editing else "Criar perfil" }}</h1>
+    <p>Combine permissões para formar um perfil de acesso.</p>
+  </div>
+  <a class="ghost-button" href="/roles">Voltar</a>
+</div>
+
+<section class="panel form-panel">
+  {% if protected %}
+  <div class="welcome-banner">
+    O perfil Administrador é protegido e sempre mantém acesso completo.
+  </div>
+  {% endif %}
+
+  {% if error %}
+  <div class="alert danger">{{ error }}</div>
+  {% endif %}
+
+  <form
+    method="post"
+    action="{{ '/roles/' ~ edited_role.id ~ '/edit' if editing else '/roles/new' }}"
+    class="stack-form"
+  >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <div class="form-grid">
+      <label class="field">
+        <span>Nome</span>
+        <input
+          name="name"
+          value="{{ values.get('name', edited_role.name if editing else '') }}"
+          {{ 'readonly' if protected else '' }}
+          required
+        >
+      </label>
+
+      <label class="field">
+        <span>Identificador</span>
+        <input
+          name="slug"
+          value="{{ values.get('slug', edited_role.slug if editing else '') }}"
+          {{ 'readonly' if editing and edited_role.is_system else '' }}
+          required
+        >
+      </label>
+
+      <label class="field full">
+        <span>Descrição</span>
+        <textarea
+          name="description"
+          rows="3"
+          {{ 'readonly' if protected else '' }}
+        >{{ values.get('description', edited_role.description if editing else '') }}</textarea>
+      </label>
+    </div>
+
+    <div class="permission-section">
+      <div>
+        <p class="eyebrow">Permissões</p>
+        <h2>Capacidades do perfil</h2>
+      </div>
+
+      <div class="permission-grid">
+        {% for permission in permissions %}
+        <label class="permission-option">
+          <input
+            type="checkbox"
+            name="permissions"
+            value="{{ permission.code }}"
+            {{ 'checked' if permission.code in selected_permissions else '' }}
+            {{ 'disabled' if protected else '' }}
+          >
+          <span>
+            <strong>{{ permission.name }}</strong>
+            <small>{{ permission.description }}</small>
+          </span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if not protected %}
+    <div class="form-actions">
+      <a class="ghost-button" href="/roles">Cancelar</a>
+      <button class="primary-button" type="submit">
+        {{ "Salvar perfil" if editing else "Criar perfil" }}
+      </button>
+    </div>
+    {% endif %}
+  </form>
+</section>
+{% endblock %}

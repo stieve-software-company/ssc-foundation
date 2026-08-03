@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Perfis e permissões{% endblock %}
+{% block page_name %}Perfis e permissões{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="eyebrow">RBAC</p>
+    <h1>Perfis de acesso</h1>
+    <p>Controle o que cada grupo de usuários pode executar.</p>
+  </div>
+
+  {% if "roles.manage" in permission_codes %}
+  <a class="primary-button" href="/roles/new">Novo perfil</a>
+  {% endif %}
+</div>
+
+<section class="card-grid">
+  {% for role in roles %}
+  <article class="role-card">
+    <div class="role-card-header">
+      <div>
+        <span class="role-badge">{{ "Sistema" if role.is_system else "Personalizado" }}</span>
+        <h2>{{ role.name }}</h2>
+        <p>{{ role.description }}</p>
+      </div>
+      <strong>{{ role.users | length }}</strong>
+    </div>
+
+    <div class="permission-preview">
+      {% for permission in role.permissions[:5] %}
+      <span>{{ permission.name }}</span>
+      {% endfor %}
+      {% if role.permissions | length > 5 %}
+      <span>+{{ role.permissions | length - 5 }} permissões</span>
+      {% endif %}
+    </div>
+
+    <footer>
+      <small>{{ role.permissions | length }} permissões</small>
+      {% if "roles.manage" in permission_codes %}
+      <a href="/roles/{{ role.id }}/edit">
+        {{ "Visualizar" if role.slug == "admin" else "Editar" }}
+      </a>
+      {% endif %}
+    </footer>
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

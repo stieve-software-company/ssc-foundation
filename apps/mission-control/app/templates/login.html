@@ -9,45 +9,43 @@
 </head>
 <body class="login-page">
   <main class="login-layout">
-    <section class="brand-panel" aria-label="Apresentação do CompanyOS">
-      <div class="brand-mark" aria-hidden="true">SSC</div>
+    <section class="brand-panel">
+      <div class="brand-mark large">SSC</div>
 
       <div class="brand-copy">
         <p class="eyebrow">Stieve Software Company</p>
-        <h1>Mission Control</h1>
-        <p class="brand-description">
-          O centro de comando para planejar, desenvolver, operar e evoluir
-          projetos com agentes de inteligência artificial.
+        <h1>Mission<br>Control</h1>
+        <p>
+          Usuários, permissões, auditoria e infraestrutura em um único
+          centro de comando.
         </p>
       </div>
 
       <div class="system-status">
-        <span class="status-dot" aria-hidden="true"></span>
-        <span>CompanyOS online</span>
+        <span class="status-dot"></span>
+        <span>CompanyOS v0.2</span>
       </div>
     </section>
 
     <section class="login-panel">
       <div class="login-card">
-        <header class="login-header">
+        <header>
           <p class="eyebrow">Acesso seguro</p>
-          <h2>Entre no sistema</h2>
-          <p>Use suas credenciais locais para acessar o Mission Control.</p>
+          <h2>Bem-vindo de volta</h2>
+          <p>Entre com suas credenciais para acessar o painel.</p>
         </header>
 
         {% if error %}
-        <div class="alert" role="alert">
-          {{ error }}
-        </div>
+        <div class="alert danger" role="alert">{{ error }}</div>
         {% endif %}
 
-        <form method="post" action="/login" class="login-form">
+        <form method="post" action="/login" class="stack-form">
           <label for="username">Usuário</label>
           <input
             id="username"
             name="username"
             type="text"
-            value="{{ username }}"
+            value="{{ username or '' }}"
             autocomplete="username"
             required
             autofocus
@@ -62,12 +60,14 @@
             required
           >
 
-          <button type="submit">Acessar Mission Control</button>
+          <button class="primary-button" type="submit">
+            Acessar Mission Control
+          </button>
         </form>
 
         <footer class="login-footer">
-          <span>Ambiente de desenvolvimento</span>
-          <span>SSC v0.1</span>
+          <span>Ambiente protegido</span>
+          <span>SSC v0.2</span>
         </footer>
       </div>
     </section>

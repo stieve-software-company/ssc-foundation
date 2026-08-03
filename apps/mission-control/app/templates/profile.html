@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Meu perfil{% endblock %}
+{% block page_name %}Meu perfil{% endblock %}
+
+{% block content %}
+{% if welcome %}
+<div class="welcome-banner">
+  <strong>Primeiro acesso concluído.</strong>
+  Complete seus dados para identificar sua conta no CompanyOS.
+</div>
+{% endif %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Conta pessoal</p>
+    <h1>Seus dados</h1>
+    <p>Atualize suas informações e preferências.</p>
+  </div>
+</div>
+
+<div class="content-grid profile-columns">
+  <section class="panel">
+    <div class="profile-summary">
+      <span class="avatar extra-large">
+        {{ (current_user.full_name or current_user.username)[0:2] | upper }}
+      </span>
+      <div>
+        <h2>{{ current_user.full_name or current_user.username }}</h2>
+        <p>@{{ current_user.username }} · {{ current_user.role.name }}</p>
+      </div>
+    </div>
+
+    {% if error %}
+    <div class="alert danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="/profile" class="form-grid">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <label class="field full">
+        <span>Nome completo</span>
+        <input name="full_name" value="{{ current_user.full_name }}" required>
+      </label>
+
+      <label class="field full">
+        <span>E-mail</span>
+        <input
+          name="email"
+          type="email"
+          value="{{ current_user.email or '' }}"
+          required
+        >
+      </label>
+
+      <label class="field">
+        <span>Telefone</span>
+        <input name="phone" value="{{ current_user.phone or '' }}">
+      </label>
+
+      <label class="field">
+        <span>Cargo</span>
+        <input name="job_title" value="{{ current_user.job_title or '' }}">
+      </label>
+
+      <label class="field">
+        <span>Departamento</span>
+        <input name="department" value="{{ current_user.department or '' }}">
+      </label>
+
+      <label class="field">
+        <span>Fuso horário</span>
+        <input name="timezone_name" value="{{ current_user.timezone }}">
+      </label>
+
+      <label class="field">
+        <span>Idioma</span>
+        <select name="locale">
+          <option value="pt-BR" {{ 'selected' if current_user.locale == 'pt-BR' else '' }}>Português (Brasil)</option>
+          <option value="en-US" {{ 'selected' if current_user.locale == 'en-US' else '' }}>English (US)</option>
+        </select>
+      </label>
+
+      <label class="field full">
+        <span>Biografia</span>
+        <textarea name="bio" rows="4">{{ current_user.bio or '' }}</textarea>
+      </label>
+
+      <div class="form-actions full">
+        <button class="primary-button" type="submit">Salvar perfil</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel compact">
+    <p class="eyebrow">Segurança</p>
+    <h2>Alterar senha</h2>
+    <p class="muted">
+      A alteração encerra todas as sessões antigas da conta.
+    </p>
+
+    {% if password_error %}
+    <div class="alert danger">{{ password_error }}</div>
+    {% endif %}
+
+    <form method="post" action="/profile/password" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <label for="current_password">Senha atual</label>
+      <input id="current_password" name="current_password" type="password" required>
+
+      <label for="new_password">Nova senha</label>
+      <input id="new_password" name="new_password" type="password" required>
+
+      <label for="confirm_password">Confirmar nova senha</label>
+      <input id="confirm_password" name="confirm_password" type="password" required>
+
+      <small class="field-help">
+        Mínimo de 12 caracteres, com maiúscula, minúscula e número.
+      </small>
+
+      <button class="secondary-button" type="submit">Alterar senha</button>
+    </form>
+
+    <div class="account-metadata">
+      <span>Último acesso</span>
+      <strong>
+        {{ current_user.last_login_at.strftime("%d/%m/%Y %H:%M") if current_user.last_login_at else "Primeiro acesso" }}
+      </strong>
+    </div>
+  </section>
+</div>
+{% endblock %}

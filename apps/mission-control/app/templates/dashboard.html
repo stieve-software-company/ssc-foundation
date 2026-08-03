@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Visão geral{% endblock %}
+{% block page_name %}Visão geral{% endblock %}
+
+{% block content %}
+<section class="hero-card">
+  <div>
+    <p class="eyebrow">Centro de comando</p>
+    <h1>Olá, {{ current_user.full_name or current_user.username }}.</h1>
+    <p>
+      O CompanyOS está conectado aos serviços de infraestrutura e pronto
+      para administrar usuários, perfis e operações.
+    </p>
+  </div>
+  <a class="secondary-button" href="/profile">Meu perfil</a>
+</section>
+
+<section class="stat-grid">
+  <article class="stat-card">
+    <span>Usuários</span>
+    <strong>{{ stats.users }}</strong>
+    <small>{{ stats.active_users }} ativos</small>
+  </article>
+  <article class="stat-card">
+    <span>Perfis</span>
+    <strong>{{ stats.roles }}</strong>
+    <small>perfis de acesso</small>
+  </article>
+  <article class="stat-card">
+    <span>Auditoria</span>
+    <strong>{{ stats.audit_events }}</strong>
+    <small>eventos registrados</small>
+  </article>
+  <article class="stat-card">
+    <span>Serviços</span>
+    <strong>{{ service_statuses | selectattr("status", "equalto", "healthy") | list | length }}/{{ service_statuses | length }}</strong>
+    <small>respondendo agora</small>
+  </article>
+</section>
+
+<div class="content-grid two-columns">
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Infraestrutura</p>
+        <h2>Saúde dos serviços</h2>
+      </div>
+      <a href="/system">Ver detalhes</a>
+    </div>
+
+    <div class="service-list">
+      {% for service in service_statuses %}
+      <div class="service-row">
+        <span class="status-dot {{ 'offline' if service.status != 'healthy' else '' }}"></span>
+        <div>
+          <strong>{{ service.name }}</strong>
+          <small>{{ service.detail }}</small>
+        </div>
+        <span class="latency">
+          {{ service.latency_ms if service.latency_ms is not none else "—" }} ms
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Rastreabilidade</p>
+        <h2>Atividade recente</h2>
+      </div>
+      {% if "audit.view" in permission_codes %}
+      <a href="/audit">Abrir auditoria</a>
+      {% endif %}
+    </div>
+
+    <div class="activity-list">
+      {% for event in recent_events %}
+      <div class="activity-row">
+        <span class="activity-icon">{{ event.action[0:1] | upper }}</span>
+        <div>
+          <strong>{{ event.description }}</strong>
+          <small>
+            {{ event.user.full_name if event.user else "Sistema" }}
+            · {{ event.created_at.strftime("%d/%m/%Y %H:%M") }}
+          </small>
+        </div>
+      </div>
+      {% else %}
+      <p class="empty-state">Nenhum evento registrado.</p>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

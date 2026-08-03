@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% set editing = edited_user is not none %}
+{% block title %}{{ "Editar usuário" if editing else "Novo usuário" }}{% endblock %}
+{% block page_name %}{{ "Editar usuário" if editing else "Novo usuário" }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Identidade</p>
+    <h1>{{ "Editar usuário" if editing else "Criar usuário" }}</h1>
+    <p>Defina dados pessoais, credenciais e perfil de acesso.</p>
+  </div>
+  <a class="ghost-button" href="/users">Voltar</a>
+</div>
+
+<section class="panel form-panel">
+  {% if error %}
+  <div class="alert danger">{{ error }}</div>
+  {% endif %}
+
+  <form
+    method="post"
+    action="{{ '/users/' ~ edited_user.id ~ '/edit' if editing else '/users/new' }}"
+    class="form-grid"
+  >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <label class="field">
+      <span>Usuário</span>
+      <input
+        name="username"
+        value="{{ values.get('username', edited_user.username if editing else '') }}"
+        required
+      >
+    </label>
+
+    <label class="field">
+      <span>Perfil de acesso</span>
+      {% set current_role = values.get('role_id', edited_user.role_id if editing else '') %}
+      <select name="role_id" required>
+        <option value="">Selecione</option>
+        {% for role in roles %}
+        <option value="{{ role.id }}" {{ 'selected' if current_role|string == role.id|string else '' }}>
+          {{ role.name }}
+        </option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="field full">
+      <span>Nome completo</span>
+      <input
+        name="full_name"
+        value="{{ values.get('full_name', edited_user.full_name if editing else '') }}"
+        required
+      >
+    </label>
+
+    <label class="field full">
+      <span>E-mail</span>
+      <input
+        name="email"
+        type="email"
+        value="{{ values.get('email', edited_user.email if editing else '') or '' }}"
+        required
+      >
+    </label>
+
+    <label class="field">
+      <span>Telefone</span>
+      <input
+        name="phone"
+        value="{{ values.get('phone', edited_user.phone if editing else '') or '' }}"
+      >
+    </label>
+
+    <label class="field">
+      <span>Cargo</span>
+      <input
+        name="job_title"
+        value="{{ values.get('job_title', edited_user.job_title if editing else '') or '' }}"
+      >
+    </label>
+
+    <label class="field full">
+      <span>Departamento</span>
+      <input
+        name="department"
+        value="{{ values.get('department', edited_user.department if editing else '') or '' }}"
+      >
+    </label>
+
+    {% if editing %}
+    <label class="field full">
+      <span>Nova senha</span>
+      <input name="new_password" type="password">
+      <small>Deixe vazio para manter a senha atual.</small>
+    </label>
+    {% else %}
+    <label class="field full">
+      <span>Senha inicial</span>
+      <input name="password" type="password" required>
+      <small>Mínimo de 12 caracteres, com maiúscula, minúscula e número.</small>
+    </label>
+    {% endif %}
+
+    <div class="form-actions full">
+      <a class="ghost-button" href="/users">Cancelar</a>
+      <button class="primary-button" type="submit">
+        {{ "Salvar alterações" if editing else "Criar usuário" }}
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

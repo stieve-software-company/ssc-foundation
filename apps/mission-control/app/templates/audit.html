@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Auditoria{% endblock %}
+{% block page_name %}Auditoria{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Rastreabilidade</p>
+    <h1>Histórico de ações</h1>
+    <p>Últimos 200 eventos administrativos e de autenticação.</p>
+  </div>
+</div>
+
+<section class="panel table-panel">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Ação</th>
+          <th>Responsável</th>
+          <th>Descrição</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+        <tr>
+          <td>{{ event.created_at.strftime("%d/%m/%Y %H:%M:%S") }}</td>
+          <td><code>{{ event.action }}</code></td>
+          <td>{{ event.user.full_name if event.user else "Sistema" }}</td>
+          <td>{{ event.description }}</td>
+          <td>{{ event.ip_address or "—" }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" class="empty-state">Nenhum evento registrado.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>{% block title %}Mission Control{% endblock %} | CompanyOS</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+</head>
+<body class="app-body">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="/app">
+      <span class="brand-mark">SSC</span>
+      <span>
+        <strong>Mission Control</strong>
+        <small>CompanyOS v0.2</small>
+      </span>
+    </a>
+
+    <nav class="sidebar-nav" aria-label="Navegação principal">
+      {% if "dashboard.view" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'dashboard' else '' }}" href="/app">
+        <span>Visão geral</span>
+      </a>
+      {% endif %}
+
+      {% if "users.view" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'users' else '' }}" href="/users">
+        <span>Usuários</span>
+      </a>
+      {% endif %}
+
+      {% if "roles.view" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'roles' else '' }}" href="/roles">
+        <span>Perfis e permissões</span>
+      </a>
+      {% endif %}
+
+      {% if "audit.view" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'audit' else '' }}" href="/audit">
+        <span>Auditoria</span>
+      </a>
+      {% endif %}
+
+      {% if "system.view" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'system' else '' }}" href="/system">
+        <span>Sistema</span>
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="{{ 'active' if active_nav == 'profile' else '' }}" href="/profile">
+        <span class="avatar">{{ (current_user.full_name or current_user.username)[0:2] | upper }}</span>
+        <span class="user-summary">
+          <strong>{{ current_user.full_name or current_user.username }}</strong>
+          <small>{{ current_user.role.name }}</small>
+        </span>
+      </a>
+
+      <form method="post" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="ghost-button full-width" type="submit">Sair</button>
+      </form>
+    </div>
+  </aside>
+
+  <div class="app-layout">
+    <header class="topbar">
+      <button
+        class="menu-button"
+        type="button"
+        data-sidebar-toggle
+        aria-label="Abrir ou fechar menu"
+      >
+        ☰
+      </button>
+
+      <div>
+        <p class="eyebrow">Stieve Software Company</p>
+        <strong>{% block page_name %}Mission Control{% endblock %}</strong>
+      </div>
+
+      <span class="environment-badge">{{ environment }}</span>
+    </header>
+
+    <main class="main-content">
+      {% if message %}
+      <div class="flash-message" role="status">{{ message }}</div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
