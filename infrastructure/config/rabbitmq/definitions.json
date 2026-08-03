@@ -1,0 +1,352 @@
+{
+  "rabbit_version": "4.3.4",
+  "users": [],
+  "vhosts": [
+    {
+      "name": "development"
+    }
+  ],
+  "permissions": [],
+  "topic_permissions": [],
+  "parameters": [],
+  "global_parameters": [],
+  "policies": [
+    {
+      "vhost": "development",
+      "name": "companyos-work-dead-letter",
+      "pattern": "^companyos\\.(workflow|agent)\\.commands$",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "companyos.dead-letter"
+      },
+      "priority": 10
+    },
+    {
+      "vhost": "development",
+      "name": "companyos-event-dead-letter",
+      "pattern": "^companyos\\.(audit|notifications)\\.events$",
+      "apply-to": "queues",
+      "definition": {
+        "dead-letter-exchange": "companyos.dead-letter"
+      },
+      "priority": 10
+    },
+    {
+      "vhost": "development",
+      "name": "companyos-retry-5s",
+      "pattern": "^companyos\\.retry\\.5s$",
+      "apply-to": "queues",
+      "definition": {
+        "message-ttl": 5000,
+        "dead-letter-exchange": "companyos.commands"
+      },
+      "priority": 20
+    },
+    {
+      "vhost": "development",
+      "name": "companyos-retry-30s",
+      "pattern": "^companyos\\.retry\\.30s$",
+      "apply-to": "queues",
+      "definition": {
+        "message-ttl": 30000,
+        "dead-letter-exchange": "companyos.commands"
+      },
+      "priority": 20
+    },
+    {
+      "vhost": "development",
+      "name": "companyos-retry-5m",
+      "pattern": "^companyos\\.retry\\.5m$",
+      "apply-to": "queues",
+      "definition": {
+        "message-ttl": 300000,
+        "dead-letter-exchange": "companyos.commands"
+      },
+      "priority": 20
+    }
+  ],
+  "queues": [
+    {
+      "name": "companyos.workflow.commands",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.agent.commands",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.audit.events",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.notifications.events",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.retry.5s",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.retry.30s",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.retry.5m",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "companyos.dead-letter",
+      "vhost": "development",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "companyos.commands",
+      "vhost": "development",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "companyos.events",
+      "vhost": "development",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "companyos.retry.5s",
+      "vhost": "development",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "companyos.retry.30s",
+      "vhost": "development",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "companyos.retry.5m",
+      "vhost": "development",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "companyos.dead-letter",
+      "vhost": "development",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "companyos.commands",
+      "vhost": "development",
+      "destination": "companyos.workflow.commands",
+      "destination_type": "queue",
+      "routing_key": "workflow.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.commands",
+      "vhost": "development",
+      "destination": "companyos.workflow.commands",
+      "destination_type": "queue",
+      "routing_key": "workflow.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.commands",
+      "vhost": "development",
+      "destination": "companyos.agent.commands",
+      "destination_type": "queue",
+      "routing_key": "agent.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.commands",
+      "vhost": "development",
+      "destination": "companyos.agent.commands",
+      "destination_type": "queue",
+      "routing_key": "agent.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.events",
+      "vhost": "development",
+      "destination": "companyos.audit.events",
+      "destination_type": "queue",
+      "routing_key": "audit.#",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.events",
+      "vhost": "development",
+      "destination": "companyos.notifications.events",
+      "destination_type": "queue",
+      "routing_key": "notification.#",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5s",
+      "vhost": "development",
+      "destination": "companyos.retry.5s",
+      "destination_type": "queue",
+      "routing_key": "workflow.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5s",
+      "vhost": "development",
+      "destination": "companyos.retry.5s",
+      "destination_type": "queue",
+      "routing_key": "workflow.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5s",
+      "vhost": "development",
+      "destination": "companyos.retry.5s",
+      "destination_type": "queue",
+      "routing_key": "agent.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5s",
+      "vhost": "development",
+      "destination": "companyos.retry.5s",
+      "destination_type": "queue",
+      "routing_key": "agent.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.30s",
+      "vhost": "development",
+      "destination": "companyos.retry.30s",
+      "destination_type": "queue",
+      "routing_key": "workflow.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.30s",
+      "vhost": "development",
+      "destination": "companyos.retry.30s",
+      "destination_type": "queue",
+      "routing_key": "workflow.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.30s",
+      "vhost": "development",
+      "destination": "companyos.retry.30s",
+      "destination_type": "queue",
+      "routing_key": "agent.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.30s",
+      "vhost": "development",
+      "destination": "companyos.retry.30s",
+      "destination_type": "queue",
+      "routing_key": "agent.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5m",
+      "vhost": "development",
+      "destination": "companyos.retry.5m",
+      "destination_type": "queue",
+      "routing_key": "workflow.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5m",
+      "vhost": "development",
+      "destination": "companyos.retry.5m",
+      "destination_type": "queue",
+      "routing_key": "workflow.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5m",
+      "vhost": "development",
+      "destination": "companyos.retry.5m",
+      "destination_type": "queue",
+      "routing_key": "agent.execute",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.retry.5m",
+      "vhost": "development",
+      "destination": "companyos.retry.5m",
+      "destination_type": "queue",
+      "routing_key": "agent.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "companyos.dead-letter",
+      "vhost": "development",
+      "destination": "companyos.dead-letter",
+      "destination_type": "queue",
+      "routing_key": "#",
+      "arguments": {}
+    }
+  ]
+}
