@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "alias": "companyos",
+  "endpoint": "http://127.0.0.1:9000",
+  "buckets": [
+    {
+      "name": "companyos-references",
+      "versioning": true,
+      "anonymous": "none",
+      "purpose": "Project reference files and user-provided context"
+    },
+    {
+      "name": "companyos-artifacts",
+      "versioning": true,
+      "anonymous": "none",
+      "purpose": "Generated builds, reports, documentation and agent artifacts"
+    },
+    {
+      "name": "companyos-exports",
+      "versioning": false,
+      "anonymous": "none",
+      "purpose": "Regenerable user exports and delivery packages"
+    },
+    {
+      "name": "companyos-backups",
+      "versioning": true,
+      "anonymous": "none",
+      "purpose": "Application-managed backups, manifests and checksums"
+    }
+  ]
+}
