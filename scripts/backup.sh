@@ -7,6 +7,8 @@ readonly PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 readonly ENV_FILE="${PROJECT_ROOT}/.env"
 readonly ENV_EXAMPLE_FILE="${PROJECT_ROOT}/.env.example"
 readonly COMPOSE_FILE="${PROJECT_ROOT}/compose.yaml"
+readonly ACCESS_COMPOSE_FILE="${PROJECT_ROOT}/compose.access.yaml"
+readonly LOCAL_DOMAIN_COMPOSE_FILE="${PROJECT_ROOT}/compose.local-domain.yaml"
 readonly VALIDATE_SCRIPT="${SCRIPT_DIR}/validate.sh"
 readonly BACKUP_ROOT="${PROJECT_ROOT}/infrastructure/backups/archives"
 readonly BACKUP_HELPER_IMAGE="alpine:3.22.1"
@@ -71,9 +73,25 @@ compose() {
   (
     cd "${PROJECT_ROOT}"
 
+    local compose_files=(
+      -f "${COMPOSE_FILE}"
+    )
+
+    if [[ -s "${ACCESS_COMPOSE_FILE}" ]]; then
+      compose_files+=(
+        -f "${ACCESS_COMPOSE_FILE}"
+      )
+    fi
+
+    if [[ -s "${LOCAL_DOMAIN_COMPOSE_FILE}" ]]; then
+      compose_files+=(
+        -f "${LOCAL_DOMAIN_COMPOSE_FILE}"
+      )
+    fi
+
     docker compose \
       --env-file "${ENV_FILE}" \
-      -f "${COMPOSE_FILE}" \
+      "${compose_files[@]}" \
       --profile "*" \
       "$@"
   )
@@ -164,6 +182,10 @@ run_validation() {
 
   if ! "${VALIDATE_SCRIPT}"; then
     fail "A validação falhou. Corrija os erros antes do backup."
+  fi
+
+  if ! compose config --quiet; then
+    fail "A configuração Compose integrada é inválida."
   fi
 
   ok "Validação concluída."
@@ -296,6 +318,16 @@ record_metadata_before() {
 
   cp "${COMPOSE_FILE}" \
     "${BACKUP_DIR}/metadata/compose.yaml"
+
+  if [[ -s "${ACCESS_COMPOSE_FILE}" ]]; then
+    cp "${ACCESS_COMPOSE_FILE}" \
+      "${BACKUP_DIR}/metadata/compose.access.yaml"
+  fi
+
+  if [[ -s "${LOCAL_DOMAIN_COMPOSE_FILE}" ]]; then
+    cp "${LOCAL_DOMAIN_COMPOSE_FILE}" \
+      "${BACKUP_DIR}/metadata/compose.local-domain.yaml"
+  fi
 
   cp "${ENV_EXAMPLE_FILE}" \
     "${BACKUP_DIR}/metadata/.env.example"
