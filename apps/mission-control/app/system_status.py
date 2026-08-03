@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+import json
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import Callable
+from typing import Any, Callable
 
 import pika
 import redis
@@ -39,10 +40,11 @@ def measured_check(
         )
     except Exception as exc:
         elapsed = int((time.perf_counter() - started) * 1000)
+        message = str(exc).strip() or type(exc).__name__
         return ServiceStatus(
             name=name,
             status="unavailable",
-            detail=type(exc).__name__,
+            detail=message[:180],
             latency_ms=elapsed,
         )
 
@@ -80,6 +82,24 @@ def check_rabbitmq() -> ServiceStatus:
     return measured_check("RabbitMQ", operation)
 
 
+def fetch_json(url: str, timeout: int = 3) -> dict[str, Any]:
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "SSC-Mission-Control/0.2"},
+    )
+
+    with urllib.request.urlopen(request, timeout=timeout) as response:
+        if response.status >= 400:
+            raise RuntimeError(f"HTTP {response.status}")
+
+        payload = json.load(response)
+
+    if not isinstance(payload, dict):
+        raise RuntimeError("resposta JSON inválida")
+
+    return payload
+
+
 def check_http(
     name: str,
     url: str,
@@ -90,12 +110,61 @@ def check_http(
             url,
             headers={"User-Agent": "SSC-Mission-Control/0.2"},
         )
+
         with urllib.request.urlopen(request, timeout=3) as response:
             if response.status >= 400:
                 raise RuntimeError(f"HTTP {response.status}")
+
         return success_detail
 
     return measured_check(name, operation)
+
+
+def check_ollama() -> ServiceStatus:
+    def operation() -> str:
+        if settings.ai_provider != "ollama":
+            return f"provedor configurado: {settings.ai_provider}"
+
+        timeout = min(
+            settings.ollama_request_timeout_seconds,
+            5,
+        )
+
+        version_payload = fetch_json(
+            f"{settings.ollama_base_url}/api/version",
+            timeout=timeout,
+        )
+        tags_payload = fetch_json(
+            f"{settings.ollama_base_url}/api/tags",
+            timeout=timeout,
+        )
+
+        version = str(version_payload.get("version", "desconhecida"))
+        models = tags_payload.get("models", [])
+
+        if not isinstance(models, list):
+            raise RuntimeError("lista de modelos inválida")
+
+        installed_names = {
+            str(item.get("name") or item.get("model") or "")
+            for item in models
+            if isinstance(item, dict)
+        }
+
+        if (
+            settings.ollama_verify_model
+            and settings.ollama_model not in installed_names
+        ):
+            raise RuntimeError(
+                f"modelo não instalado: {settings.ollama_model}"
+            )
+
+        return (
+            f"{settings.ollama_model} disponível "
+            f"· Ollama {version}"
+        )
+
+    return measured_check("Ollama", operation)
 
 
 def collect_statuses() -> list[ServiceStatus]:
@@ -108,11 +177,7 @@ def collect_statuses() -> list[ServiceStatus]:
             f"{settings.minio_base_url}/minio/health/live",
             "API disponível",
         ),
-        lambda: check_http(
-            "Ollama",
-            f"{settings.ollama_base_url}/api/tags",
-            "API local disponível",
-        ),
+        check_ollama,
     ]
 
     with ThreadPoolExecutor(max_workers=len(checks)) as executor:
