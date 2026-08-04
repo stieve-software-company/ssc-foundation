@@ -17,6 +17,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.audit import record_event
+from app.branding.routes import router as branding_router
 from app.auth import (
     AuthContext,
     clear_session_cookie,
@@ -48,7 +49,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title="SSC Mission Control",
-    version="0.2.0",
+    version="0.2.1",
     docs_url=None,
     redoc_url=None,
     openapi_url=None,
@@ -62,6 +63,8 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
+
+app.include_router(branding_router)
 
 
 @app.middleware("http")
@@ -241,7 +244,7 @@ def health(db: Session = Depends(get_db)):
             {
                 "status": "unhealthy",
                 "service": "ssc-mission-control",
-                "version": "0.2.0",
+                "version": "0.2.1",
                 "database": "unavailable",
             },
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -250,7 +253,7 @@ def health(db: Session = Depends(get_db)):
     return {
         "status": "healthy",
         "service": "ssc-mission-control",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "database": "connected",
     }
 

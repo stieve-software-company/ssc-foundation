@@ -55,6 +55,11 @@ PERMISSIONS = [
         "Consultar a saúde dos serviços da plataforma.",
     ),
     (
+        "branding.manage",
+        "Gerenciar aparência",
+        "Alterar a logo e o esquema de cores do Mission Control.",
+    ),
+    (
         "profile.edit",
         "Editar o próprio perfil",
         "Atualizar dados pessoais e a própria senha.",

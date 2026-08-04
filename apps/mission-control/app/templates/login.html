@@ -6,11 +6,15 @@
   <meta name="color-scheme" content="dark">
   <title>Acesso | SSC Mission Control</title>
   <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  <link rel="stylesheet" href="/branding/theme.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/branding-global.css') }}">
 </head>
 <body class="login-page">
   <main class="login-layout">
     <section class="brand-panel">
-      <div class="brand-mark large">SSC</div>
+      <div class="brand-mark large branding-logo-frame">
+        <img src="/branding/logo" alt="Logo do Mission Control">
+      </div>
 
       <div class="brand-copy">
         <p class="eyebrow">Stieve Software Company</p>
@@ -23,7 +27,7 @@
 
       <div class="system-status">
         <span class="status-dot"></span>
-        <span>CompanyOS v0.2</span>
+        <span>CompanyOS v0.2.1</span>
       </div>
     </section>
 
@@ -67,7 +71,7 @@
 
         <footer class="login-footer">
           <span>Ambiente protegido</span>
-          <span>SSC v0.2</span>
+          <span>SSC v0.2.1</span>
         </footer>
       </div>
     </section>

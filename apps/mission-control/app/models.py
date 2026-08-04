@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import (
     JSON,
+    LargeBinary,
     Boolean,
     DateTime,
     ForeignKey,
@@ -151,3 +152,56 @@ class AuditEvent(Base):
         back_populates="audit_events",
         lazy="selectin",
     )
+
+class BrandingSettings(Base):
+    __tablename__ = "branding_settings"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    theme_name: Mapped[str] = mapped_column(
+        String(40),
+        default="midnight",
+    )
+    background: Mapped[str] = mapped_column(
+        String(7),
+        default="#070a12",
+    )
+    surface: Mapped[str] = mapped_column(
+        String(7),
+        default="#111726",
+    )
+    surface_soft: Mapped[str] = mapped_column(
+        String(7),
+        default="#171f33",
+    )
+    accent: Mapped[str] = mapped_column(
+        String(7),
+        default="#7c8cff",
+    )
+    accent_strong: Mapped[str] = mapped_column(
+        String(7),
+        default="#9f7aea",
+    )
+    text: Mapped[str] = mapped_column(
+        String(7),
+        default="#f5f7ff",
+    )
+    muted: Mapped[str] = mapped_column(
+        String(7),
+        default="#9aa5bd",
+    )
+    logo_data: Mapped[bytes | None] = mapped_column(LargeBinary)
+    logo_content_type: Mapped[str | None] = mapped_column(String(50))
+    logo_filename: Mapped[str | None] = mapped_column(String(255))
+    logo_updated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True)
+    )
+    updated_by_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utc_now,
+        onupdate=utc_now,
+    )
+

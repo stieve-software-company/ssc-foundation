@@ -1,0 +1,39 @@
+{
+  "version": "0.2.1",
+  "feature": "branding",
+  "themes": [
+    "midnight",
+    "ocean",
+    "forest",
+    "ember",
+    "slate",
+    "custom"
+  ],
+  "logo_formats": [
+    "image/png",
+    "image/jpeg",
+    "image/webp"
+  ],
+  "logo_max_bytes": 2097152,
+  "storage": "postgresql",
+  "permission": "branding.manage",
+  "new_dependencies": false,
+  "contains_secrets": false,
+  "bash_validated": true,
+  "python_validated": true,
+  "csp_inline_styles": false,
+  "files": [
+    "MISSION_CONTROL_BRANDING.md",
+    "MISSION_CONTROL_BRANDING_OPERATIONS.md",
+    "apps/mission-control/app/branding/__init__.py",
+    "apps/mission-control/app/branding/routes.py",
+    "apps/mission-control/app/branding/service.py",
+    "apps/mission-control/app/static/branding-global.css",
+    "apps/mission-control/app/static/branding-page.css",
+    "apps/mission-control/app/static/branding-page.js",
+    "apps/mission-control/app/templates/branding.html",
+    "scripts/bootstrap-mission-control-branding.sh",
+    "scripts/install-mission-control-branding.sh",
+    "scripts/test-mission-control-branding.sh"
+  ]
+}

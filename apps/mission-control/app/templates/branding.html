@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Aparência{% endblock %}
+{% block page_name %}Aparência{% endblock %}
+
+{% block head_assets %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', path='/branding-page.css') }}"
+>
+<script
+  src="{{ url_for('static', path='/branding-page.js') }}"
+  defer
+></script>
+{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div>
+    <p class="eyebrow">Identidade visual</p>
+    <h1>Aparência</h1>
+    <p>
+      Personalize a logo e o esquema de cores do Mission Control.
+      As mudanças também aparecem na tela de acesso.
+    </p>
+  </div>
+</section>
+
+{% if error %}
+<div class="alert danger" role="alert">{{ error }}</div>
+{% endif %}
+
+<div class="branding-grid">
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Marca</p>
+        <h2>Logo do sistema</h2>
+      </div>
+    </div>
+
+    <div class="branding-logo-preview">
+      <img
+        src="/branding/logo?preview=1"
+        alt="Logo atual do Mission Control"
+      >
+    </div>
+
+    <form
+      method="post"
+      action="/branding/logo"
+      enctype="multipart/form-data"
+      class="stack-form"
+    >
+      <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token }}"
+      >
+
+      <label for="logo">Nova logo</label>
+      <input
+        id="logo"
+        name="logo"
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        required
+      >
+      <p class="muted branding-help">
+        PNG, JPEG ou WebP. Tamanho máximo de 2 MB.
+        Use uma imagem quadrada ou horizontal com fundo transparente.
+      </p>
+
+      <button class="primary-button" type="submit">
+        Enviar logo
+      </button>
+    </form>
+
+    {% if branding.has_logo %}
+    <form method="post" action="/branding/logo/remove">
+      <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token }}"
+      >
+      <button class="ghost-button full-width" type="submit">
+        Remover logo personalizada
+      </button>
+    </form>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <p class="eyebrow">Cores</p>
+        <h2>Esquema visual</h2>
+      </div>
+    </div>
+
+    <form
+      method="post"
+      action="/branding/theme"
+      class="stack-form"
+      id="branding-theme-form"
+    >
+      <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token }}"
+      >
+
+      <div class="theme-grid">
+        {% for key, theme in themes.items() %}
+        <label class="theme-option">
+          <input
+            type="radio"
+            name="theme_name"
+            value="{{ key }}"
+            {% if branding.theme_name == key %}checked{% endif %}
+          >
+          <span class="theme-swatch theme-{{ key }}">
+            <i></i><b></b><em></em>
+          </span>
+          <strong>{{ theme.label }}</strong>
+        </label>
+        {% endfor %}
+
+        <label class="theme-option">
+          <input
+            type="radio"
+            name="theme_name"
+            value="custom"
+            {% if branding.theme_name == "custom" %}checked{% endif %}
+          >
+          <span class="theme-swatch custom-swatch">
+            <i></i><b></b><em></em>
+          </span>
+          <strong>Personalizado</strong>
+        </label>
+      </div>
+
+      <fieldset class="custom-colors" id="custom-colors">
+        <legend>Cores personalizadas</legend>
+
+        <div class="color-fields">
+          <label>
+            Fundo
+            <input
+              type="color"
+              name="background"
+              value="{{ branding.background }}"
+            >
+          </label>
+
+          <label>
+            Superfície
+            <input
+              type="color"
+              name="surface"
+              value="{{ branding.surface }}"
+            >
+          </label>
+
+          <label>
+            Superfície secundária
+            <input
+              type="color"
+              name="surface_soft"
+              value="{{ branding.surface_soft }}"
+            >
+          </label>
+
+          <label>
+            Destaque
+            <input
+              type="color"
+              name="accent"
+              value="{{ branding.accent }}"
+            >
+          </label>
+
+          <label>
+            Destaque secundário
+            <input
+              type="color"
+              name="accent_strong"
+              value="{{ branding.accent_strong }}"
+            >
+          </label>
+        </div>
+
+        <p class="muted branding-help">
+          O fundo e as superfícies precisam permanecer escuros para
+          preservar o contraste e a leitura.
+        </p>
+      </fieldset>
+
+      <button class="primary-button" type="submit">
+        Aplicar tema
+      </button>
+    </form>
+  </section>
+</div>
+
+<section class="panel branding-danger-zone">
+  <div>
+    <p class="eyebrow">Restauração</p>
+    <h2>Voltar ao padrão</h2>
+    <p class="muted">
+      Remove a logo personalizada e restaura o tema Midnight.
+    </p>
+  </div>
+
+  <form method="post" action="/branding/reset">
+    <input
+      type="hidden"
+      name="csrf_token"
+      value="{{ csrf_token }}"
+    >
+    <button class="ghost-button" type="submit">
+      Restaurar aparência padrão
+    </button>
+  </form>
+</section>
+{% endblock %}

@@ -6,15 +6,20 @@
   <meta name="color-scheme" content="dark">
   <title>{% block title %}Mission Control{% endblock %} | CompanyOS</title>
   <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  <link rel="stylesheet" href="/branding/theme.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/branding-global.css') }}">
   <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+  {% block head_assets %}{% endblock %}
 </head>
 <body class="app-body">
   <aside class="sidebar" id="sidebar">
     <a class="brand" href="/app">
-      <span class="brand-mark">SSC</span>
+      <span class="brand-mark branding-logo-frame">
+        <img src="/branding/logo" alt="Logo do Mission Control">
+      </span>
       <span>
         <strong>Mission Control</strong>
-        <small>CompanyOS v0.2</small>
+        <small>CompanyOS v0.2.1</small>
       </span>
     </a>
 
@@ -40,6 +45,12 @@
       {% if "audit.view" in permission_codes %}
       <a class="{{ 'active' if active_nav == 'audit' else '' }}" href="/audit">
         <span>Auditoria</span>
+      </a>
+      {% endif %}
+
+      {% if "branding.manage" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'branding' else '' }}" href="/branding">
+        <span>Aparência</span>
       </a>
       {% endif %}
 
