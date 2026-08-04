@@ -1,0 +1,58 @@
+{
+  "version": "0.3.0",
+  "base_version": "0.2.1",
+  "base_commit": "564347593d785e0b3f9c36eff067f8a12eaee3dd",
+  "mode": "read_only",
+  "branding_preserved": true,
+  "new_permissions": [
+    "assistant.use"
+  ],
+  "tools": [
+    "assistant.help",
+    "system.get_status",
+    "system.get_service",
+    "users.list",
+    "users.get",
+    "users.count",
+    "roles.list",
+    "roles.get",
+    "audit.list_recent",
+    "audit.count"
+  ],
+  "rate_limit": {
+    "requests": 20,
+    "window_seconds": 60,
+    "primary_backend": "redis",
+    "fallback_backend": "memory"
+  },
+  "contains_secrets": false,
+  "docker_socket": false,
+  "new_python_dependencies": false,
+  "python_syntax_validated": true,
+  "bash_syntax_validated": true,
+  "installer_mock_validated": true,
+  "installer_idempotency_validated": true,
+  "javascript_uses_inner_html": false,
+  "csrf_required": true,
+  "branding_files_replaced": false,
+  "files": [
+    "MISSION_CONTROL_ASSISTANT_IMPLEMENTATION.md",
+    "MISSION_CONTROL_ASSISTANT_MANIFEST.json",
+    "MISSION_CONTROL_ASSISTANT_OPERATIONS.md",
+    "MISSION_CONTROL_MINI_AGENT_PLAN.md",
+    "MISSION_CONTROL_V0_3_SCOPE.md",
+    "apps/mission-control/app/assistant/__init__.py",
+    "apps/mission-control/app/assistant/orchestrator.py",
+    "apps/mission-control/app/assistant/provider.py",
+    "apps/mission-control/app/assistant/rate_limit.py",
+    "apps/mission-control/app/assistant/routes.py",
+    "apps/mission-control/app/assistant/schemas.py",
+    "apps/mission-control/app/assistant/tools.py",
+    "apps/mission-control/app/static/assistant.css",
+    "apps/mission-control/app/static/assistant.js",
+    "apps/mission-control/app/templates/assistant.html",
+    "scripts/bootstrap-mission-control-assistant.sh",
+    "scripts/install-mission-control-assistant.sh",
+    "scripts/test-mission-control-assistant.sh"
+  ]
+}

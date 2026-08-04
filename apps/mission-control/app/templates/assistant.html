@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Assistant{% endblock %}
+{% block page_name %}CompanyOS Assistant{% endblock %}
+
+{% block head_assets %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', path='/assistant.css') }}"
+>
+<script
+  src="{{ url_for('static', path='/assistant.js') }}"
+  defer
+></script>
+{% endblock %}
+
+{% block content %}
+<section class="assistant-hero">
+  <div>
+    <p class="eyebrow">Assistente operacional</p>
+    <h1>Pergunte ao CompanyOS.</h1>
+    <p>
+      Consulte serviços, usuários, perfis e auditoria usando
+      linguagem natural. Esta versão funciona somente em modo
+      de leitura.
+    </p>
+  </div>
+
+  <div class="assistant-model">
+    <span class="status-dot"></span>
+    <div>
+      <strong>{{ assistant_model }}</strong>
+      <small>Ollama externo</small>
+    </div>
+  </div>
+</section>
+
+<section class="assistant-layout">
+  <div class="assistant-chat panel">
+    <div
+      class="assistant-messages"
+      id="assistant-messages"
+      aria-live="polite"
+      aria-label="Conversa com o Assistant"
+    >
+      <article class="assistant-message assistant">
+        <div class="assistant-message-label">
+          Assistant
+        </div>
+        <p>
+          Olá,
+          {{ current_user.full_name or current_user.username }}.
+          Posso consultar informações operacionais permitidas
+          pelo seu perfil.
+        </p>
+      </article>
+    </div>
+
+    <form
+      class="assistant-form"
+      id="assistant-form"
+    >
+      <input
+        type="hidden"
+        name="csrf_token"
+        value="{{ csrf_token }}"
+      >
+
+      <label for="assistant-input">
+        Sua pergunta
+      </label>
+
+      <textarea
+        id="assistant-input"
+        name="message"
+        rows="3"
+        maxlength="1000"
+        required
+        placeholder="Ex.: Como estão os serviços?"
+      ></textarea>
+
+      <div class="assistant-form-footer">
+        <p>
+          Não envie senhas, tokens, cookies ou segredos.
+        </p>
+
+        <button
+          class="primary-button"
+          id="assistant-submit"
+          type="submit"
+        >
+          Enviar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <aside class="assistant-sidebar panel">
+    <p class="eyebrow">Atalhos</p>
+    <h2>Perguntas rápidas</h2>
+
+    <div class="assistant-shortcuts">
+      {% if "system.view" in permission_codes %}
+      <button
+        type="button"
+        data-assistant-question="Como estão os serviços?"
+      >
+        Status dos serviços
+      </button>
+
+      <button
+        type="button"
+        data-assistant-question="O Redis está saudável?"
+      >
+        Consultar Redis
+      </button>
+      {% endif %}
+
+      {% if "users.view" in permission_codes %}
+      <button
+        type="button"
+        data-assistant-question="Liste os usuários ativos."
+      >
+        Usuários ativos
+      </button>
+
+      <button
+        type="button"
+        data-assistant-question="Liste os usuários inativos."
+      >
+        Usuários inativos
+      </button>
+
+      <button
+        type="button"
+        data-assistant-question="Quantos usuários existem?"
+      >
+        Contagem de usuários
+      </button>
+      {% endif %}
+
+      {% if "roles.view" in permission_codes %}
+      <button
+        type="button"
+        data-assistant-question="Liste os perfis de acesso."
+      >
+        Perfis de acesso
+      </button>
+      {% endif %}
+
+      {% if "audit.view" in permission_codes %}
+      <button
+        type="button"
+        data-assistant-question="Mostre os últimos eventos de auditoria."
+      >
+        Auditoria recente
+      </button>
+      {% endif %}
+
+      <button
+        type="button"
+        data-assistant-question="O que você consegue fazer?"
+      >
+        Ajuda
+      </button>
+    </div>
+
+    <div class="assistant-safety">
+      <strong>Modo seguro</strong>
+      <p>
+        O modelo interpreta a pergunta. O backend valida
+        permissões, executa uma ferramenta conhecida e registra
+        a operação na auditoria.
+      </p>
+    </div>
+  </aside>
+</section>
+{% endblock %}

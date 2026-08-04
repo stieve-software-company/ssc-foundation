@@ -55,6 +55,11 @@ PERMISSIONS = [
         "Consultar a saúde dos serviços da plataforma.",
     ),
     (
+        "assistant.use",
+        "Usar o CompanyOS Assistant",
+        "Consultar ferramentas operacionais em linguagem natural.",
+    ),
+    (
         "branding.manage",
         "Gerenciar aparência",
         "Alterar a logo e o esquema de cores do Mission Control.",
@@ -78,6 +83,7 @@ ROLE_DEFINITIONS = {
         "description": "Gestão de usuários e visualização operacional.",
         "permissions": {
             "dashboard.view",
+            "assistant.use",
             "users.view",
             "users.create",
             "users.edit",
@@ -93,6 +99,7 @@ ROLE_DEFINITIONS = {
         "description": "Operação e consulta dos recursos da plataforma.",
         "permissions": {
             "dashboard.view",
+            "assistant.use",
             "users.view",
             "roles.view",
             "system.view",
@@ -104,6 +111,7 @@ ROLE_DEFINITIONS = {
         "description": "Acesso de leitura aos painéis autorizados.",
         "permissions": {
             "dashboard.view",
+            "assistant.use",
             "system.view",
             "profile.edit",
         },

@@ -19,7 +19,7 @@
       </span>
       <span>
         <strong>Mission Control</strong>
-        <small>CompanyOS v0.2.1</small>
+        <small>CompanyOS v0.3.0</small>
       </span>
     </a>
 
@@ -27,6 +27,12 @@
       {% if "dashboard.view" in permission_codes %}
       <a class="{{ 'active' if active_nav == 'dashboard' else '' }}" href="/app">
         <span>Visão geral</span>
+      </a>
+      {% endif %}
+
+      {% if "assistant.use" in permission_codes %}
+      <a class="{{ 'active' if active_nav == 'assistant' else '' }}" href="/assistant">
+        <span>Assistant</span>
       </a>
       {% endif %}
 
