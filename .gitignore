@@ -229,6 +229,7 @@ override.tf.json
 .health/
 status-output/
 checksums.local.sha256
+postgresql-audit.txt
 
 # ------------------------------------------------------------
 # Exceções documentais e estruturais

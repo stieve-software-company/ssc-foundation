@@ -1,0 +1,51 @@
+{
+  "package": "postgresql_operational_v1",
+  "sprint": "1.2",
+  "target": "PostgreSQL 18.4",
+  "strategy": {
+    "admin_owner_preserved": "companyos",
+    "application_role": "companyos_app",
+    "monitor_role": "companyos_monitor",
+    "owner_and_migrator_deferred_to_sprint": "1.3"
+  },
+  "changes": {
+    "database_roles_created": [
+      "companyos_app",
+      "companyos_monitor"
+    ],
+    "private_env_updated": true,
+    "mission_control_recreated": true,
+    "postgres_container_recreated": false,
+    "volumes_removed": false,
+    "extensions_installed": [],
+    "postgres_parameters_changed": [],
+    "pg_hba_changed": false
+  },
+  "backup": {
+    "physical_backup_required": true,
+    "logical_format": "custom",
+    "globals_without_password_hashes": true,
+    "checksums": "sha256",
+    "temporary_restore_database": true
+  },
+  "validation": {
+    "bash_syntax": true,
+    "installer_mock": true,
+    "installer_idempotency": true,
+    "static_safety_scan": true,
+    "runtime_against_user_environment": false
+  },
+  "contains_secrets": false,
+  "files": [
+    "POSTGRESQL_AUDIT_ANALYSIS.md",
+    "POSTGRESQL_OPERATIONAL_CONFIGURATION.md",
+    "POSTGRESQL_OPERATIONS.md",
+    "infrastructure/config/postgresql/README.md",
+    "scripts/backup-postgresql-logical.sh",
+    "scripts/bootstrap-postgresql-operational.sh",
+    "scripts/configure-postgresql-access.sh",
+    "scripts/install-postgresql-operational.sh",
+    "scripts/test-postgresql-access.sh",
+    "scripts/test-postgresql-logical-restore.sh"
+  ]
+}

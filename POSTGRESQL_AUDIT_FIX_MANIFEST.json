@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "mode": "read-only",
+  "fixed_section": "privileges",
+  "uses": [
+    "pg_database.datacl",
+    "pg_namespace.nspacl",
+    "acldefault",
+    "aclexplode"
+  ],
+  "mutates_database": false,
+  "restarts_services": false,
+  "contains_secrets": false,
+  "bash_syntax_validated": true
+}

@@ -1,0 +1,14 @@
+{
+  "phase": "sprint-1.2-postgresql-audit",
+  "mode": "read-only",
+  "contains_secrets": false,
+  "mutates_database": false,
+  "restarts_services": false,
+  "removes_volumes": false,
+  "bash_syntax_validated": true,
+  "files": [
+    "POSTGRESQL_AUDIT_INSTRUCTIONS.md",
+    "POSTGRESQL_OPERATIONAL_PLAN.md",
+    "scripts/audit-postgresql.sh"
+  ]
+}

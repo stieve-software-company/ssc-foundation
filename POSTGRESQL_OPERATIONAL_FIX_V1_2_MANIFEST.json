@@ -1,0 +1,19 @@
+{
+  "version": "1.2",
+  "fix": "monitor denial test without has_table_privilege name resolution",
+  "roles_already_created": true,
+  "database_url_changed_before_failure": false,
+  "resume_from_stage": 2,
+  "physical_backup_repeated": false,
+  "idempotent": true,
+  "contains_secrets": false,
+  "removes_volumes": false,
+  "bash_syntax_validated": true,
+  "embedded_python_compiled": true,
+  "files": [
+    "POSTGRESQL_OPERATIONAL_FIX_V1_2.md",
+    "scripts/configure-postgresql-access.sh",
+    "scripts/test-postgresql-access.sh",
+    "scripts/resume-postgresql-operational.sh"
+  ]
+}
