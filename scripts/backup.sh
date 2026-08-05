@@ -8,6 +8,7 @@ readonly ENV_FILE="${PROJECT_ROOT}/.env"
 readonly ENV_EXAMPLE_FILE="${PROJECT_ROOT}/.env.example"
 readonly COMPOSE_FILE="${PROJECT_ROOT}/compose.yaml"
 readonly ACCESS_COMPOSE_FILE="${PROJECT_ROOT}/compose.access.yaml"
+readonly OBSERVABILITY_COMPOSE_FILE="${PROJECT_ROOT}/compose.observability.yaml"
 readonly LOCAL_DOMAIN_COMPOSE_FILE="${PROJECT_ROOT}/compose.local-domain.yaml"
 readonly VALIDATE_SCRIPT="${SCRIPT_DIR}/validate.sh"
 readonly BACKUP_ROOT="${PROJECT_ROOT}/infrastructure/backups/archives"
@@ -86,6 +87,12 @@ compose() {
     if [[ -s "${LOCAL_DOMAIN_COMPOSE_FILE}" ]]; then
       compose_files+=(
         -f "${LOCAL_DOMAIN_COMPOSE_FILE}"
+      )
+    fi
+
+    if [[ -s "${OBSERVABILITY_COMPOSE_FILE}" ]]; then
+      compose_files+=(
+        -f "${OBSERVABILITY_COMPOSE_FILE}"
       )
     fi
 
@@ -327,6 +334,11 @@ record_metadata_before() {
   if [[ -s "${LOCAL_DOMAIN_COMPOSE_FILE}" ]]; then
     cp "${LOCAL_DOMAIN_COMPOSE_FILE}" \
       "${BACKUP_DIR}/metadata/compose.local-domain.yaml"
+  fi
+
+  if [[ -s "${OBSERVABILITY_COMPOSE_FILE}" ]]; then
+    cp "${OBSERVABILITY_COMPOSE_FILE}" \
+      "${BACKUP_DIR}/metadata/compose.observability.yaml"
   fi
 
   cp "${ENV_EXAMPLE_FILE}" \

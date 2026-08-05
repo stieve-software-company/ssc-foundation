@@ -239,3 +239,13 @@ postgresql-audit.txt
 !**/.gitkeep
 !README.md
 !**/README.md
+
+# Auditorias locais de observabilidade
+observability-audit.txt
+observability-test.txt
+/infrastructure/backups/
+/observability-test.txt
+/observability-audit.txt
+/prometheus-diagnostic.txt
+/compose-port-runtime-diagnostic.txt
+/compose-port-runtime-continuation.txt

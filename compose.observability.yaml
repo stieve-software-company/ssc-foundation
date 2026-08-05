@@ -1,0 +1,286 @@
+services:
+  rabbitmq:
+    volumes:
+      - ./infrastructure/config/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+    networks:
+      - data
+      - observability
+
+  minio:
+    environment:
+      MINIO_PROMETHEUS_AUTH_TYPE: public
+    networks:
+      - data
+      - observability
+
+  prometheus:
+    ports: !reset []
+    volumes:
+      - ./infrastructure/config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infrastructure/config/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    networks:
+      observability:
+        aliases:
+          - prometheus
+      data: {}
+      application: {}
+    depends_on:
+      blackbox-exporter:
+        condition: service_started
+      node-exporter:
+        condition: service_started
+      cadvisor:
+        condition: service_started
+      postgres-exporter:
+        condition: service_started
+      redis-exporter:
+        condition: service_started
+      alloy:
+        condition: service_started
+
+  loki:
+    ports: !reset []
+    command:
+      - -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./infrastructure/config/loki/loki-config.yaml:/etc/loki/loki-config.yaml:ro
+      - loki_data:/loki
+    networks:
+      observability:
+        aliases:
+          - loki
+
+  grafana:
+    environment:
+      GF_METRICS_ENABLED: "true"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_SECURITY_DISABLE_GRAVATAR: "true"
+      GF_USERS_DEFAULT_THEME: dark
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/companyos-infrastructure.json
+    volumes:
+      - ./infrastructure/config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infrastructure/config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    networks:
+      - public
+      - observability
+    depends_on:
+      prometheus:
+        condition: service_started
+      loki:
+        condition: service_started
+
+  docker-socket-proxy:
+    profiles:
+      - observability
+    image: ${DOCKER_SOCKET_PROXY_IMAGE:?Defina DOCKER_SOCKET_PROXY_IMAGE no arquivo .env}
+    environment:
+      LOG_LEVEL: warning
+      ALLOW_START: "0"
+      ALLOW_STOP: "0"
+      ALLOW_RESTARTS: "0"
+      AUTH: "0"
+      BUILD: "0"
+      COMMIT: "0"
+      CONFIGS: "0"
+      CONTAINERS: "1"
+      DISTRIBUTION: "0"
+      EVENTS: "1"
+      EXEC: "0"
+      GRPC: "0"
+      IMAGES: "0"
+      INFO: "1"
+      NETWORKS: "1"
+      NODES: "0"
+      PING: "1"
+      PLUGINS: "0"
+      POST: "0"
+      SECRETS: "0"
+      SERVICES: "0"
+      SESSION: "0"
+      SWARM: "0"
+      SYSTEM: "0"
+      TASKS: "0"
+      VERSION: "1"
+      VOLUMES: "0"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - docker_api
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "3"
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: docker-socket-proxy
+
+  alloy:
+    profiles:
+      - observability
+    image: ${ALLOY_IMAGE:?Defina ALLOY_IMAGE no arquivo .env}
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - --disable-reporting
+      - /etc/alloy/config.alloy
+    volumes:
+      - ./infrastructure/config/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - alloy_data:/var/lib/alloy/data
+    networks:
+      - observability
+      - docker_api
+    depends_on:
+      docker-socket-proxy:
+        condition: service_started
+      loki:
+        condition: service_started
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "5"
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: alloy
+
+  node-exporter:
+    profiles:
+      - observability
+    image: ${NODE_EXPORTER_IMAGE:?Defina NODE_EXPORTER_IMAGE no arquivo .env}
+    command:
+      - --path.rootfs=/host
+      - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/containers/storage/.+)($|/)
+    volumes:
+      - /:/host:ro,rslave
+    pid: host
+    networks:
+      - observability
+    restart: unless-stopped
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: node-exporter
+
+  cadvisor:
+    profiles:
+      - observability
+    image: ${CADVISOR_IMAGE:?Defina CADVISOR_IMAGE no arquivo .env}
+    privileged: true
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk:/dev/disk:ro
+    networks:
+      - observability
+    restart: unless-stopped
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: cadvisor
+
+  postgres-exporter:
+    profiles:
+      - observability
+    image: ${POSTGRES_EXPORTER_IMAGE:?Defina POSTGRES_EXPORTER_IMAGE no arquivo .env}
+    environment:
+      DATA_SOURCE_URI: postgres:5432/${POSTGRES_DB:-companyos}?sslmode=disable
+      DATA_SOURCE_USER: ${POSTGRES_MONITOR_USER:?Defina POSTGRES_MONITOR_USER no arquivo .env}
+      DATA_SOURCE_PASS: ${POSTGRES_MONITOR_PASSWORD:?Defina POSTGRES_MONITOR_PASSWORD no arquivo .env}
+      PG_EXPORTER_COLLECTION_TIMEOUT: 20s
+    networks:
+      - data
+      - observability
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: postgres-exporter
+
+  redis-exporter:
+    profiles:
+      - observability
+    image: ${REDIS_EXPORTER_IMAGE:?Defina REDIS_EXPORTER_IMAGE no arquivo .env}
+    environment:
+      REDIS_ADDR: redis://redis:6379
+      REDIS_USER: default
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Defina REDIS_PASSWORD no arquivo .env}
+      REDIS_EXPORTER_LOG_FORMAT: json
+      REDIS_EXPORTER_LOG_LEVEL: info
+      REDIS_EXPORTER_CHECK_SINGLE_KEYS: ""
+      REDIS_EXPORTER_INCL_CONFIG_METRICS: "false"
+      REDIS_EXPORTER_REDACT_CONFIG_METRICS: "true"
+    networks:
+      - data
+      - observability
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: redis-exporter
+
+  blackbox-exporter:
+    profiles:
+      - observability
+    image: ${BLACKBOX_EXPORTER_IMAGE:?Defina BLACKBOX_EXPORTER_IMAGE no arquivo .env}
+    command:
+      - --config.file=/etc/blackbox/blackbox.yml
+      - --log.level=info
+    volumes:
+      - ./infrastructure/config/blackbox/blackbox.yml:/etc/blackbox/blackbox.yml:ro
+    networks:
+      - observability
+      - application
+      - data
+    restart: unless-stopped
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.stieve-software-company.platform: companyos
+      com.stieve-software-company.environment: ${SSC_ENVIRONMENT:-development}
+      com.stieve-software-company.service: blackbox-exporter
+
+networks:
+  docker_api:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_docker_api
+    driver: bridge
+    internal: true
+
+volumes:
+  alloy_data:
+    name: ${COMPOSE_PROJECT_NAME:-ssc}_alloy_data

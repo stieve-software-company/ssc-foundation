@@ -251,7 +251,7 @@ services:
       GF_SERVER_HTTP_PORT: ${GRAFANA_CONTAINER_PORT:-3000}
       TZ: ${SSC_TIMEZONE:-America/Sao_Paulo}
     ports:
-      - "${SSC_BIND_ADDRESS:-127.0.0.1}:${GRAFANA_HOST_PORT:-3000}:${GRAFANA_CONTAINER_PORT:-3000}"
+      - "${SSC_ACCESS_BIND_ADDRESS:-0.0.0.0}:${GRAFANA_HOST_PORT:-3000}:${GRAFANA_CONTAINER_PORT:-3000}"
     volumes:
       - grafana_data:/var/lib/grafana
     networks:

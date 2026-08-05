@@ -1,0 +1,66 @@
+logging {
+  level  = "info"
+  format = "json"
+}
+
+discovery.docker "containers" {
+  host = "tcp://docker-socket-proxy:2375"
+  refresh_interval = "15s"
+}
+
+discovery.relabel "companyos_containers" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "ssc"
+    action        = "keep"
+  }
+}
+
+discovery.relabel "docker_log_labels" {
+  targets = []
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_stieve_software_company_environment"]
+    target_label  = "environment"
+  }
+
+  rule {
+    target_label = "platform"
+    replacement  = "companyos"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_log_stream"]
+    target_label  = "stream"
+  }
+}
+
+loki.source.docker "companyos" {
+  host           = "tcp://docker-socket-proxy:2375"
+  targets        = discovery.relabel.companyos_containers.output
+  labels         = {
+    platform = "companyos",
+  }
+  relabel_rules  = discovery.relabel.docker_log_labels.rules
+  refresh_interval = "15s"
+  forward_to     = [loki.write.local.receiver]
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

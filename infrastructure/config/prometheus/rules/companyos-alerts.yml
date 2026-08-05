@@ -1,0 +1,56 @@
+groups:
+  - name: companyos-infrastructure
+    rules:
+      - alert: CompanyOSTargetDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Target {{ $labels.job }} indisponível"
+          description: "O target {{ $labels.instance }} está DOWN por mais de 2 minutos."
+
+      - alert: CompanyOSHostMemoryHigh
+        expr: |
+          (
+            1
+            -
+            (
+              node_memory_MemAvailable_bytes
+              /
+              node_memory_MemTotal_bytes
+            )
+          ) * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Uso de memória acima de 85%"
+          description: "A VM CompanyOS está com uso elevado de memória."
+
+      - alert: CompanyOSRootFilesystemHigh
+        expr: |
+          (
+            1
+            -
+            (
+              node_filesystem_avail_bytes{mountpoint="/"}
+              /
+              node_filesystem_size_bytes{mountpoint="/"}
+            )
+          ) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Filesystem raiz acima de 80%"
+          description: "O disco raiz da VM CompanyOS está com uso elevado."
+
+      - alert: CompanyOSBlackboxProbeFailed
+        expr: probe_success == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sonda HTTP falhou"
+          description: "A sonda para {{ $labels.instance }} não está respondendo."
