@@ -17,6 +17,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.audit import record_event
+from app.api.v1.routes import router as api_v1_router
 from app.branding.routes import router as branding_router
 from app.assistant.routes import router as assistant_router
 from app.auth import (
@@ -36,7 +37,11 @@ from app.security import (
     validate_password_strength,
     verify_password,
 )
-from app.system_status import collect_statuses
+from app.foundation.collector import (
+    get_status_summary,
+    start_health_collector,
+    stop_health_collector,
+)
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -45,12 +50,17 @@ BASE_DIR = Path(__file__).resolve().parent
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     initialize_database()
-    yield
+    await start_health_collector()
+
+    try:
+        yield
+    finally:
+        await stop_health_collector()
 
 
 app = FastAPI(
     title="SSC Mission Control",
-    version="0.3.0",
+    version="0.4.0",
     docs_url=None,
     redoc_url=None,
     openapi_url=None,
@@ -67,6 +77,7 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 app.include_router(branding_router)
 app.include_router(assistant_router)
+app.include_router(api_v1_router)
 
 
 @app.middleware("http")
@@ -246,7 +257,7 @@ def health(db: Session = Depends(get_db)):
             {
                 "status": "unhealthy",
                 "service": "ssc-mission-control",
-                "version": "0.3.0",
+                "version": "0.4.0",
                 "database": "unavailable",
             },
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -255,7 +266,7 @@ def health(db: Session = Depends(get_db)):
     return {
         "status": "healthy",
         "service": "ssc-mission-control",
-        "version": "0.3.0",
+        "version": "0.4.0",
         "database": "connected",
     }
 
@@ -386,7 +397,8 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
         .limit(8)
     ).all()
 
-    service_statuses = collect_statuses()
+    service_summary = get_status_summary()
+    service_statuses = service_summary["services"]
 
     return render(
         request,
@@ -1253,7 +1265,8 @@ def system_page(request: Request, db: Session = Depends(get_db)):
     if not has_permission(auth.user, "system.view"):
         return forbidden(request, auth)
 
-    statuses = collect_statuses()
+    service_summary = get_status_summary()
+    statuses = service_summary["services"]
 
     return render(
         request,

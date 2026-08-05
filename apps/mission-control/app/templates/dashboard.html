@@ -3,6 +3,13 @@
 {% block title %}Visão geral{% endblock %}
 {% block page_name %}Visão geral{% endblock %}
 
+{% block head_assets %}
+<script
+  src="{{ url_for('static', path='/dashboard-live.js') }}"
+  defer
+></script>
+{% endblock %}
+
 {% block content %}
 <section class="hero-card">
   <div>
@@ -12,6 +19,17 @@
       O CompanyOS está conectado aos serviços de infraestrutura e pronto
       para administrar usuários, perfis e operações.
     </p>
+    <div class="live-status-line">
+      <span
+        class="live-connection"
+        data-live-connection
+        data-state="connecting"
+      >Conectando...</span>
+      <span>
+        Última coleta:
+        <strong data-live-updated>aguardando</strong>
+      </span>
+    </div>
   </div>
   <a class="secondary-button" href="/profile">Meu perfil</a>
 </section>
@@ -34,8 +52,10 @@
   </article>
   <article class="stat-card">
     <span>Serviços</span>
-    <strong>{{ service_statuses | selectattr("status", "equalto", "healthy") | list | length }}/{{ service_statuses | length }}</strong>
-    <small>respondendo agora</small>
+    <strong data-live-service-count>
+      {{ service_statuses | selectattr("status", "equalto", "healthy") | list | length }}/{{ service_statuses | length }}
+    </strong>
+    <small>snapshot em cache</small>
   </article>
 </section>
 
@@ -51,14 +71,20 @@
 
     <div class="service-list">
       {% for service in service_statuses %}
-      <div class="service-row">
-        <span class="status-dot {{ 'offline' if service.status != 'healthy' else '' }}"></span>
+      <div
+        class="service-row {{ 'offline' if service.status == 'unavailable' else '' }} {{ 'collecting' if service.status == 'collecting' else '' }}"
+        data-live-service="{{ service.slug }}"
+      >
+        <span
+          class="status-dot {{ 'offline' if service.status == 'unavailable' else '' }} {{ 'collecting' if service.status == 'collecting' else '' }}"
+          data-live-status-dot
+        ></span>
         <div>
           <strong>{{ service.name }}</strong>
-          <small>{{ service.detail }}</small>
+          <small data-live-detail>{{ service.detail }}</small>
         </div>
-        <span class="latency">
-          {{ service.latency_ms if service.latency_ms is not none else "—" }} ms
+        <span class="latency" data-live-latency>
+          {{ service.latency_ms if service.latency_ms is not none else "—" }}{% if service.latency_ms is not none %} ms{% endif %}
         </span>
       </div>
       {% endfor %}

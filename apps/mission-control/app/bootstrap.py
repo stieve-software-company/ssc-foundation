@@ -4,7 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.database import Base, SessionLocal, engine
+from app.database import SessionLocal
+from app.migration_manager import assert_database_revision
 from app.models import Permission, Role, User
 
 
@@ -206,7 +207,7 @@ def seed_initial_admin(db: Session, roles: dict[str, Role]) -> None:
 
 
 def initialize_database() -> None:
-    Base.metadata.create_all(bind=engine)
+    assert_database_revision()
 
     with SessionLocal() as db:
         permissions = seed_permissions(db)

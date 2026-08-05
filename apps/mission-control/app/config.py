@@ -69,6 +69,9 @@ class Settings:
     session_max_age_seconds: int
     cookie_secure: bool
     environment: str
+    status_collect_interval_seconds: int
+    status_cache_ttl_seconds: int
+    status_sse_interval_seconds: int
 
 
 settings = Settings(
@@ -127,5 +130,23 @@ settings = Settings(
     environment=os.getenv(
         "SSC_ENVIRONMENT",
         "development",
+    ),
+    status_collect_interval_seconds=integer_env(
+        "MC_STATUS_COLLECT_INTERVAL_SECONDS",
+        10,
+        minimum=2,
+        maximum=300,
+    ),
+    status_cache_ttl_seconds=integer_env(
+        "MC_STATUS_CACHE_TTL_SECONDS",
+        30,
+        minimum=5,
+        maximum=3600,
+    ),
+    status_sse_interval_seconds=integer_env(
+        "MC_STATUS_SSE_INTERVAL_SECONDS",
+        3,
+        minimum=1,
+        maximum=60,
     ),
 )

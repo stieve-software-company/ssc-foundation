@@ -3,29 +3,64 @@
 {% block title %}Sistema{% endblock %}
 {% block page_name %}Sistema{% endblock %}
 
+{% block head_assets %}
+<script
+  src="{{ url_for('static', path='/dashboard-live.js') }}"
+  defer
+></script>
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
   <div>
     <p class="eyebrow">Infraestrutura</p>
     <h1>Estado do sistema</h1>
-    <p>Verificação em tempo real dos serviços conectados ao CompanyOS.</p>
+    <p>
+      Snapshot dinâmico dos serviços conectados ao CompanyOS.
+    </p>
+    <div class="live-status-line">
+      <span
+        class="live-connection"
+        data-live-connection
+        data-state="connecting"
+      >Conectando...</span>
+      <span>
+        Última coleta:
+        <strong data-live-updated>aguardando</strong>
+      </span>
+    </div>
   </div>
-  <a class="secondary-button" href="/system">Atualizar</a>
+  <a class="secondary-button" href="/system">Atualizar página</a>
 </div>
 
 <section class="service-grid">
   {% for service in service_statuses %}
-  <article class="service-card {{ 'offline' if service.status != 'healthy' else '' }}">
+  <article
+    class="service-card {{ 'offline' if service.status == 'unavailable' else '' }} {{ 'collecting' if service.status == 'collecting' else '' }}"
+    data-live-service="{{ service.slug }}"
+  >
     <div class="service-card-top">
-      <span class="status-dot {{ 'offline' if service.status != 'healthy' else '' }}"></span>
-      <span class="status-badge {{ 'inactive' if service.status != 'healthy' else '' }}">
-        {{ "Disponível" if service.status == "healthy" else "Indisponível" }}
+      <span
+        class="status-dot {{ 'offline' if service.status == 'unavailable' else '' }} {{ 'collecting' if service.status == 'collecting' else '' }}"
+        data-live-status-dot
+      ></span>
+      <span
+        class="status-badge {{ 'inactive' if service.status == 'unavailable' else '' }} {{ 'collecting' if service.status == 'collecting' else '' }}"
+        data-live-status-badge
+      >
+        {% if service.status == "healthy" %}
+        Disponível
+        {% elif service.status == "collecting" %}
+        Coletando
+        {% else %}
+        Indisponível
+        {% endif %}
       </span>
     </div>
     <h2>{{ service.name }}</h2>
-    <p>{{ service.detail }}</p>
-    <strong>
-      {{ service.latency_ms if service.latency_ms is not none else "—" }} ms
+    <p data-live-detail>{{ service.detail }}</p>
+    <strong data-live-latency>
+      {{ service.latency_ms if service.latency_ms is not none else "—" }}{% if service.latency_ms is not none %} ms{% endif %}
     </strong>
   </article>
   {% endfor %}
@@ -37,10 +72,10 @@
     <h2>Controle protegido</h2>
   </div>
   <p>
-    Esta interface não recebe acesso ao socket Docker. Assim, uma falha no
-    painel não concede controle total da VM. Ações operacionais serão
-    adicionadas posteriormente por um controlador com lista de comandos,
-    aprovação e auditoria.
+    Esta interface continua sem acesso ao socket Docker. O Lote 1
+    adiciona somente coleta, cache e atualização ao vivo. Operações
+    serão implementadas posteriormente por um controlador isolado,
+    com lista permitida, confirmação e auditoria.
   </p>
 </section>
 {% endblock %}

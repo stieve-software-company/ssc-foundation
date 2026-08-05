@@ -205,3 +205,47 @@ class BrandingSettings(Base):
         onupdate=utc_now,
     )
 
+class ServiceDefinition(Base):
+    __tablename__ = "service_definitions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slug: Mapped[str] = mapped_column(
+        String(80),
+        unique=True,
+        index=True,
+    )
+    name: Mapped[str] = mapped_column(String(120))
+    category: Mapped[str] = mapped_column(
+        String(80),
+        default="infrastructure",
+    )
+    criticality: Mapped[str] = mapped_column(
+        String(20),
+        default="normal",
+    )
+    check_type: Mapped[str] = mapped_column(
+        String(40),
+        default="builtin",
+    )
+    check_target: Mapped[str] = mapped_column(String(120))
+    check_timeout_seconds: Mapped[int] = mapped_column(default=5)
+    source: Mapped[str] = mapped_column(
+        String(40),
+        default="bootstrap",
+    )
+    is_enabled: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True,
+        index=True,
+    )
+    sort_order: Mapped[int] = mapped_column(default=100)
+    attributes: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utc_now,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utc_now,
+        onupdate=utc_now,
+    )
